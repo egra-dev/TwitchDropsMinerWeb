@@ -31,7 +31,7 @@ from settings import Settings, default_settings
 from version import __version__
 from exceptions import CaptchaRequired
 from utils import lock_file, json_load, json_save
-from constants import LOG_PATH, LOCK_PATH
+from constants import LOG_PATH, LOCK_PATH, CALL
 
 # Try to improve SSL support
 try:
@@ -45,7 +45,7 @@ except ImportError:
 # Configure logging
 LOG_PATH.parent.mkdir(exist_ok=True, parents=True)
 logging.basicConfig(
-    level=logging.INFO,
+    level=CALL,
     format='{asctime} [{levelname}] {name}: {message}',
     datefmt='%Y-%m-%d %H:%M:%S',
     style='{',
