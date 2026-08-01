@@ -220,7 +220,8 @@ class _AuthState:
     def invalidate(self, *, delete_cookies: bool = False) -> None:
         self._delattrs("access_token", "user_id")
         self._logged_in.clear()
-        self._twitch.gui.help._invalidate_button.config(state="disabled")
+        if self._twitch.gui_enabled:
+            self._twitch.gui.help._invalidate_button.config(state="disabled")
         if delete_cookies:
             session = self._twitch._session
             if session is not None:
@@ -237,7 +238,8 @@ class _AuthState:
             "client_version",
         )
         self._logged_in.clear()
-        self._twitch.gui.help._invalidate_button.config(state="disabled")
+        if self._twitch.gui_enabled:
+            self._twitch.gui.help._invalidate_button.config(state="disabled")
 
     async def _oauth_login(self) -> str:
         if self._twitch.gui_enabled:
@@ -459,13 +461,15 @@ class _AuthState:
             # update our cookie and save it
             jar.update_cookies(cookie, client_info.CLIENT_URL)
             jar.save(COOKIES_PATH)
-        self._twitch.gui.help._invalidate_button.config(state="normal")
+        if self._twitch.gui_enabled:
+            self._twitch.gui.help._invalidate_button.config(state="normal")
         self._logged_in.set()
 
     def invalidate(self, *, delete_cookies: bool = False) -> None:
         self._delattrs("access_token", "user_id")
         self._logged_in.clear()
-        self._twitch.gui.help._invalidate_button.config(state="disabled")
+        if self._twitch.gui_enabled:
+            self._twitch.gui.help._invalidate_button.config(state="disabled")
         if delete_cookies:
             session = self._twitch._session
             if session is not None:
