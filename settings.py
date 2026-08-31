@@ -7,6 +7,8 @@ from yarl import URL
 from utils import json_load, json_save
 from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
 
+import json
+
 if TYPE_CHECKING:
     from main import ParsedArgs
 
