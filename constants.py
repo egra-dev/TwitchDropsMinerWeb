@@ -262,8 +262,8 @@ class State(Enum):
 
 
 class PriorityMode(Enum):
-    PRIORITY_ONLY = 0
-    ENDING_SOONEST = 1
+    ENDING_SOONEST = 0
+    PRIORITY_ONLY = 1
     LOW_AVBL_FIRST = 2
 
 
