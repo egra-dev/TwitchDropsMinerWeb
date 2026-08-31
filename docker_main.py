@@ -104,8 +104,8 @@ async def main():
     args = ParsedArgs()
     # Set Docker-specific defaults
     args._verbose = 0
-    args._debug_ws = False
-    args._debug_gql = False
+    args._debug_ws = True
+    args._debug_gql = True
     args.log = True
     args.tray = False
     args.dump = False
