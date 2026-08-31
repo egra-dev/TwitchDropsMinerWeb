@@ -4,7 +4,7 @@ from typing import Any, TypedDict, TYPE_CHECKING
 
 from yarl import URL
 
-from utils import json_load, json_save
+from utils import json_load, json_save, _serialize
 from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
 
 import json
@@ -102,4 +102,4 @@ class Settings:
 
     def save(self, *, force: bool = False) -> None:
         with open(SETTINGS_PATH, 'w') as f:
-            json.dump(self._settings, f)
+            json.dump(self._settings, f, default=_serialize)
