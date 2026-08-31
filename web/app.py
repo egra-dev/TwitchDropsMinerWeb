@@ -1218,13 +1218,11 @@ def update_exclude(username=None):
         if action == 'add' and 'game' in data:
             game_name = data['game']
             twitch.settings.exclude.add(game_name)
-            twitch.settings.save()
                 
         elif action == 'remove' and 'game' in data:
             game_name = data['game']
             if game_name in twitch.settings.exclude:
                 twitch.settings.exclude.remove(game_name)
-                twitch.settings.save()
         
         return jsonify({'success': True, 'exclude': list(twitch.settings.exclude)})
     except Exception as e:

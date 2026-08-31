@@ -2165,11 +2165,6 @@ function saveSettings(reloadAfterSave = false) {
     // Collect data from the form
     const settings = {
         priority_mode: document.getElementById('priority-mode').value,
-        proxy: document.getElementById('proxy-input').value,
-        language: document.getElementById('language-select').value,
-        connection_quality: parseInt(document.getElementById('connection-quality').value, 10),
-        autostart_tray: document.getElementById('start-tray-checkbox').checked,
-        tray_notifications: document.getElementById('tray-notifications-checkbox').checked,
         reload: reloadAfterSave
     };
 
