@@ -99,4 +99,5 @@ class Settings:
         self._altered = True
 
     def save(self, *, force: bool = False) -> None:
-            json_save(SETTINGS_PATH, self._settings, sort=True)
+        with open(SETTINGS_PATH, 'w') as f:
+            json.dump(self._settings, f)
