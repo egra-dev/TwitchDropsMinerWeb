@@ -7,6 +7,8 @@ from yarl import URL
 from utils import json_load, json_save
 from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
 
+import logging
+
 if TYPE_CHECKING:
     from main import ParsedArgs
 
@@ -100,4 +102,5 @@ class Settings:
 
     def save(self, *, force: bool = False) -> None:
             json_save(SETTINGS_PATH, self._settings, sort=True)
-            print("Save")
+            log = logging.getLogger("docker-main")
+            log.info("Save compeled")
