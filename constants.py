@@ -106,7 +106,7 @@ LOCK_PATH = Path(WORKING_DIR, "lock.file")
 CACHE_PATH = Path(WORKING_DIR, "cache")
 CACHE_DB = Path(CACHE_PATH, "mapping.json")
 COOKIES_PATH = Path(WORKING_DIR, "cookies.jar")
-SETTINGS_PATH = Path(WORKING_DIR, "settings.json")
+SETTINGS_PATH = Path(WORKING_DIR, "settings1.json")
 # Typing
 JsonType = Dict[str, Any]
 URLType = NewType("URLType", str)

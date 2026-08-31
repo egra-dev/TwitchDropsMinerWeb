@@ -265,7 +265,7 @@ def json_load(path: Path, defaults: _JSON_T, *, merge: bool = True) -> _JSON_T:
 
 
 def json_save(path: Path, contents: Mapping[Any, Any], *, sort: bool = False) -> None:
-    new_path: Path = path.with_name(f"{path.name}.new")
+    new_path: path
     with new_path.open('w', encoding="utf8") as file:
         json.dump(contents, file, default=_serialize, sort_keys=sort, indent=4)
     new_path.replace(path)

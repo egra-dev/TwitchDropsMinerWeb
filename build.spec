@@ -123,7 +123,7 @@ try:
         a.scripts,
         *exe_args,
         upx=upx,
-        debug=True,
+        debug=False,
         name=app_name,
         console=console,
         optimize=optimize,
