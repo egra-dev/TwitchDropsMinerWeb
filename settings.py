@@ -100,3 +100,4 @@ class Settings:
 
     def save(self, *, force: bool = False) -> None:
             json_save(SETTINGS_PATH, self._settings, sort=True)
+            print("Save")
