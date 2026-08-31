@@ -1073,7 +1073,7 @@ def settings(username=None):
             'autostart_tray': twitch.settings.autostart_tray if hasattr(twitch, 'settings') else False,
             'connection_quality': twitch.settings.connection_quality if hasattr(twitch, 'settings') else 1,
             'tray_notifications': twitch.settings.tray_notifications if hasattr(twitch, 'settings') else True,
-            'priority_mode': twitch.settings.priority_mode.name if hasattr(twitch, 'settings') else 'PRIORITY_ONLY',
+            'priority_mode': twitch.settings.priority_mode.name if hasattr(twitch, 'settings') else 'Ending Soonest',
             'available_languages': [],  # TODO: expose from translate.py if needed
             'available_games': list(set(game.name for game in twitch.inventory_games())) if hasattr(twitch, 'inventory_games') else []
         }
