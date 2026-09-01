@@ -1370,7 +1370,7 @@ def reloadServer(username=None):
 
 def restart_container(container_name: str):
         result = subprocess.run(
-            ['root/x-ui/restart.sh', container_name],
+            [f'{WORKING_DIR}/restart.sh', container_name],
             check=True,
             text=True,
             capture_output=True
