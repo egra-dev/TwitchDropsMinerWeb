@@ -1359,7 +1359,7 @@ def reloadServer(username=None):
     try:
         twitch = tdm_instance
         
-        restart_container(os.getenv('CONTAINER_NAME'))
+        twitch.reloadServer()
 
         return jsonify({
             'success': True,

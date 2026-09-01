@@ -651,7 +651,10 @@ class Twitch:
             with open(DUMP_PATH, 'w', encoding="utf8"):
                 # replace the existing file with an empty one
                 pass
-        while True:
+
+        self.exit = False
+
+        while self.exit is False:
             try:
                 await self._run()
                 break
@@ -667,6 +670,9 @@ class Twitch:
         """Signal the application to reload"""
         logger.info("Changing state to RELOAD")
         self.change_state(State.RELOAD)
+
+    def reloadServer(self)
+        self.exit = True
 
     def switch_channel(self):
         """
