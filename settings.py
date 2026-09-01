@@ -78,7 +78,8 @@ default_settings: SettingsFile = {
 }
 
 default_state: StateFile = {
-    "restartRequest": False
+    "restartRequest": False,
+    "name": "None"
 }
 
 
