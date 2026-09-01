@@ -652,9 +652,7 @@ class Twitch:
                 # replace the existing file with an empty one
                 pass
 
-        self.exit = False
-
-        while self.exit is False:
+        while True:
             try:
                 await self._run()
                 break
@@ -666,15 +664,10 @@ class Twitch:
             except aiohttp.ContentTypeError as exc:
                 raise RequestException(_("login", "unexpected_content")) from exc
 
-        raise RequestException()
-
     def reload(self):
         """Signal the application to reload"""
         logger.info("Changing state to RELOAD")
         self.change_state(State.RELOAD)
-
-    def reloadServer(self):
-        self.exit = True
 
     def switch_channel(self):
         """
@@ -726,7 +719,7 @@ class Twitch:
         full_cleanup: bool = False
         channels: Final[OrderedDict[int, Channel]] = self.channels
         self.change_state(State.INVENTORY_FETCH)
-        while self.exit is False:
+        while True:
             logger.info(f"Waiting for state change. Current state: {self._state}")
             if self._state is State.RELOAD:
                 logger.info("Reloading application state")
@@ -1015,8 +1008,6 @@ class Twitch:
             logger.info(f"State change completed. Current state: {self._state}")
             logger.info("Waiting for next state change")
             await self._state_change.wait()
-        
-        raise ExitRequest()
 
         logger.error("_run() method completed unexpectedly - this should never happen!")
 
