@@ -18,7 +18,7 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(parent_dir)
 
 # Import from main project
-from constants import State
+from constants import State, WORKING_DIR
 from utils import Game, create_nonce, CHARS_HEX_LOWER
 from version import __version__
 
@@ -1369,12 +1369,9 @@ def reloadServer(username=None):
 
 
 def restart_container(container_name: str):
-        result = subprocess.run(
-            ['./restart.sh', container_name],
-            check=True,
-            text=True,
-            capture_output=True
-        )
+        sh_path = f'{WORKING_DIR}/restart.sh'
+
+        subprocess.run(["bash", sh_path, container_name], check=True)
 
 
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
