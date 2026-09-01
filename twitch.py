@@ -671,7 +671,7 @@ class Twitch:
         logger.info("Changing state to RELOAD")
         self.change_state(State.RELOAD)
 
-    def reloadServer(self)
+    def reloadServer(self):
         self.exit = True
 
     def switch_channel(self):
