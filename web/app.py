@@ -1347,12 +1347,16 @@ def reload(username=None):
         logger.error(f"Error reloading miner: {e}")
         return jsonify({'error': str(e)}), 500
 
+import sys
+
 @app.route('/api/reloadServer', methods=['POST'])
 @auth_required
 def reloadServer(username=None):
     """Reload the server"""
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
+
+    sys.exit(1)
 
     try:
         twitch = tdm_instance
