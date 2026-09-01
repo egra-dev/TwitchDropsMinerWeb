@@ -1372,7 +1372,7 @@ def reloadServer(username=None):
 
 def restart_container():
         result = subprocess.run(
-            [f'{WORKING_DIR}/restart.sh'],
+            ['bash', f'curl --unix-socket /var/run/docker.sock -X POST http://localhost/v1.41/containers/{os.getenv('CONTAINER_NAME')}/restart'],
             check=True,
             text=True,
             capture_output=True
