@@ -1370,7 +1370,7 @@ def reloadServer(username=None):
 
 def restart_container():
         twitch = tdm_instance
-        twitch.state = True
+        twitch.state.restartRequest = True
         twitch.state.save()
         
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
