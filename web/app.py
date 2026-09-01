@@ -1356,12 +1356,10 @@ def reloadServer(username=None):
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
 
-    sys.exit(1)
-
     try:
         twitch = tdm_instance
         
-        twitch.reloadServer()
+        restart_container()
 
         return jsonify({
             'success': True,
@@ -1372,9 +1370,9 @@ def reloadServer(username=None):
         return jsonify({'error': str(e)}), 500
 
 
-def restart_container(container_name: str):
+def restart_container():
         result = subprocess.run(
-            [f'{WORKING_DIR}/restart.sh', container_name],
+            [f'{WORKING_DIR}/restart.sh'],
             check=True,
             text=True,
             capture_output=True
