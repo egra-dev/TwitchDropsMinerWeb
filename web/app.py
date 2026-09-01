@@ -1356,9 +1356,7 @@ def reloadServer(username=None):
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
 
-    try:
-        twitch = tdm_instance
-        
+    try:        
         restart_container()
 
         return jsonify({
@@ -1371,10 +1369,10 @@ def reloadServer(username=None):
 
 
 def restart_container():
-    with open("restart.txt", "w") as file:
-        file.write(os.getenv('CONTAINER_NAME'))
-
-
+        twitch = tdm_instance
+        twitch.state = True
+        twitch.state.save()
+        
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
 @auth_required
 def twitch_cancel_auth(username=None):

@@ -65,23 +65,23 @@ if [ ! -f /data/blacklist.json ]; then
 fi
 
 # Remove existing files if they exist to avoid symbolic link errors
-rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/restart.sh
+rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json
 
 # Ensure proper permissions on the data files
-chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/blacklist.json /data/restart.sh
+chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/blacklist.json /data/status.json
 
 # Create symbolic links
 ln -sf /data/settings.json /app/settings.json
 ln -sf /data/cookies.jar /app/cookies.jar
 ln -sf /data/credentials.json /app/credentials.json
 ln -sf /data/blacklist.json /app/blacklist.json
-ln -sf /data/restart.sh /app/restart.sh
+ln -sf /data/status.json /app/status.json
 
 # Debug permissions
 echo "Current user: $(whoami)"
 echo "File permissions:"
 ls -la /data/
-ls -la /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/restart.sh
+ls -la /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json
 
 echo "Verifying Python imports..."
 python -c "import sys; print(sys.path)"

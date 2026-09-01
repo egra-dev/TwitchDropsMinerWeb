@@ -5,12 +5,22 @@ from typing import Any, TypedDict, TYPE_CHECKING
 from yarl import URL
 
 from utils import json_load, json_save, _serialize
-from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
+from constants import SETTINGS_PATH, STATE_PATH, DEFAULT_LANG, PriorityMode
 
 import json
 
 if TYPE_CHECKING:
     from main import ParsedArgs
+
+class StateFile:
+    restartRequest: bool
+
+    def __init__(self):
+        self._settings: StateFile = json_load(STATE_PATH, default_state)
+
+    def save(self) -> None:
+        with open(STATE_PATH, 'w') as f:
+            json.dump(self._settings, f, default=_serialize)
 
 
 class SettingsFile(TypedDict):
@@ -41,6 +51,10 @@ default_settings: SettingsFile = {
     "available_drops_check": False,
     "priority_mode": PriorityMode.ENDING_SOONEST,
     "gui_enabled": False,
+}
+
+default_state: StateFile = {
+    "restartRequest": False
 }
 
 

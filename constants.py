@@ -107,6 +107,7 @@ CACHE_PATH = Path(WORKING_DIR, "cache")
 CACHE_DB = Path(CACHE_PATH, "mapping.json")
 COOKIES_PATH = Path(WORKING_DIR, "cookies.jar")
 SETTINGS_PATH = Path(WORKING_DIR, "settings.json")
+STATE_PATH = Path(WORKING_DIR, "status.json")
 # Typing
 JsonType = Dict[str, Any]
 URLType = NewType("URLType", str)
@@ -303,7 +304,6 @@ class GQLPersistedQuery(JsonType):
         else:
             modified["variables"] = variables
         return modified
-
 
 GQL_QUERIES: dict[str, GQLPersistedQuery] = {
     # returns stream information for a particular channel

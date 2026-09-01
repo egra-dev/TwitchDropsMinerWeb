@@ -27,7 +27,7 @@ apply_headless_patches()
 from web.app import run_web_server, initialize
 from translate import _
 from twitch import Twitch
-from settings import Settings, default_settings
+from settings import Settings, StateFile, default_settings
 from version import __version__
 from exceptions import CaptchaRequired
 from utils import lock_file, json_load, json_save
@@ -118,6 +118,7 @@ async def main():
     try:
         # Create settings with our ParsedArgs instance
         settings = Settings(args)
+        state = StateFile()
         
         # Force headless/web mode for Docker environment
         settings.gui_enabled = False
@@ -127,7 +128,7 @@ async def main():
         return 4
     
     # Initialize the client
-    client = Twitch(settings)
+    client = Twitch(settings, state)
     # Get the event loop
     loop = asyncio.get_running_loop()
     
