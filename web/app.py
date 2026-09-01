@@ -1349,7 +1349,7 @@ def reload(username=None):
 
 @app.route('/api/reloadServer', methods=['POST'])
 @auth_required
-def reload(username=None):
+def reloadServer(username=None):
     """Reload the server"""
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
