@@ -15,14 +15,14 @@ if TYPE_CHECKING:
 
 class StateFile(TypedDict):
     restartRequest: bool
-    name: str
+    container_name: str
 
 class State:
     PASSTHROUGH = ("_settings", "_args")
 
     def __init__(self):
         self._settings: StateFile = json_load(STATE_PATH, default_state)
-        self._settings.name = os.getenv('CONTAINER_NAME')
+        self._settings.container_name = os.getenv('CONTAINER_NAME')
 
     def save(self) -> None:
         with open(STATE_PATH, 'w') as f:
@@ -79,7 +79,7 @@ default_settings: SettingsFile = {
 
 default_state: StateFile = {
     "restartRequest": False,
-    "name": "None"
+    "container_name": "None"
 }
 
 
