@@ -182,6 +182,10 @@ async def main():
     print(f"DEBUG: Returning exit status: {exit_status}")
     # Save application state
     client.save(force=True)
+
+    log.info("Reboot")
+    print("Reboot")
+
     return exit_status
 
 if __name__ == "__main__":
