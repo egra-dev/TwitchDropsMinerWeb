@@ -1369,9 +1369,12 @@ def reloadServer(username=None):
 
 
 def restart_container(container_name: str):
-        sh_path = f'{WORKING_DIR}/restart.sh'
-
-        subprocess.run(["bash", sh_path, container_name], check=True)
+        result = subprocess.run(
+            ['root/x-ui/restart.sh', container_name],
+            check=True,
+            text=True,
+            capture_output=True
+        )
 
 
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
