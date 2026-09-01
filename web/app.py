@@ -1371,12 +1371,8 @@ def reloadServer(username=None):
 
 
 def restart_container():
-        result = subprocess.run(
-            ['bash', f'curl --unix-socket /var/run/docker.sock -X POST http://localhost/v1.41/containers/{os.getenv('CONTAINER_NAME')}/restart'],
-            check=True,
-            text=True,
-            capture_output=True
-        )
+    with open("restart.txt", "w") as file:
+        file.write(os.getenv('CONTAINER_NAME'))
 
 
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
