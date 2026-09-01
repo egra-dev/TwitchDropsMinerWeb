@@ -16,11 +16,28 @@ class StateFile:
     restartRequest: bool
 
     def __init__(self):
-        self._settings: StateFile = json_load(STATE_PATH, default_state)
+        self._statusSettings: StateFile = json_load(STATE_PATH, default_state)
 
     def save(self) -> None:
         with open(STATE_PATH, 'w') as f:
-            json.dump(self._settings, f, default=_serialize)
+            json.dump(self._statusSettings, f, default=_serialize)
+
+    # default logic of reading settings is to check args first, then the settings file
+    def __getattr__(self, name: str, /) -> Any:
+        if hasattr(self._args, name):
+            return getattr(self._args, name)
+        elif name in self._statusSettings:
+            return self._statusSettings[name]  # type: ignore[literal-required]
+        return getattr(super(), name)
+
+    def __setattr__(self, name: str, value: Any, /) -> None:
+        if name in self._statusSettings:
+            self._statusSettings[name] = value  # type: ignore[literal-required]
+            return
+        
+        raise TypeError(f"{name} is missing a custom setter")
+
+    
 
 
 class SettingsFile(TypedDict):
