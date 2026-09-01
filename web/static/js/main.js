@@ -662,7 +662,44 @@ function setupEventListeners() {
             });
         });
     }
+    
+    const _reloadServerButton = document.getElementById('reload-server');
+
+    if (_reloadServerButton) {
+            _reloadServerButton.addEventListener('click', () => {
+            // Visual feedback
+            const originalText = _reloadServerButton.innerHTML;
+            _reloadServerButton.disabled = true;
+            _reloadServerButton.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Reloading...';
+
+            // Show toast notification
+            showToast('Reloading', 'Reloading the server...', 'info');
+
+            // Call the reload API endpoint
+            fetch('/api/reloadServer', {
+                method: 'POST',
+                headers: getAuthHeaders()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success', 'Server successfully reloaded', 'success');
+                    // Refresh data after a short delay
+                    setTimeout(reloadPage, 2000);
+                } else {
+                    showToast('Error', data.error || 'Failed to reload the server', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error', 'Failed to reload the server. Check console for details.', 'error');
+            });
+        });
+    }
 } // End of setupEventListeners function
+
+function reloadPage(){
+    location.reload();
+}
 
 // Filter channels based on search input
 function filterChannels(searchValue) {

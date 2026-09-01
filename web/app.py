@@ -11,6 +11,7 @@ import logging
 import time
 import requests
 import json
+import subprocess
 
 # Add parent directory to path for imports
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -1345,6 +1346,35 @@ def reload(username=None):
     except Exception as e:
         logger.error(f"Error reloading miner: {e}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reloadServer', methods=['POST'])
+@auth_required
+def reload(username=None):
+    """Reload the server"""
+    if tdm_instance is None:
+        return jsonify({'error': 'Miner not initialized'}), 503
+    
+    try:
+        twitch = tdm_instance
+        
+        restart_container()
+
+        return jsonify({
+            'success': True,
+            'message': 'Miner reloaded'
+        })
+    except Exception as e:
+        logger.error(f"Error reloading miner: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+def restart_container(container_name: str):
+        result = subprocess.run(
+            ['./restart.sh', container_name],
+            check=True,
+            text=True,
+            capture_output=True
+        )
 
 
 @app.route('/api/twitch_cancel_auth', methods=['POST'])
