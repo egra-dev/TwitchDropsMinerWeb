@@ -18,34 +18,41 @@ class StateFile(TypedDict):
     container_name: str
 
 class State:
-    PASSTHROUGH = ("_settings", "_args")
+    # Обязательно добавляем сюда все реальные атрибуты экземпляра, 
+    # чтобы __getattr__ и __setattr__ их не перехватывали
+    PASSTHROUGH = {"_settings", "_args"}
 
-    def __init__(self):
+    def __init__(self, args: Any = None):
+        # Инициализируем словарь через PASSTHROUGH
         self._settings: StateFile = json_load(STATE_PATH, default_state)
-        self._settings.container_name = os.getenv('CONTAINER_NAME')
+        self._args = args
+
+        # Обращение к TypedDict идет через скобки, а не через точку
+        self._settings["container_name"] = os.getenv("CONTAINER_NAME", "")
 
     def save(self) -> None:
-        with open(STATE_PATH, 'w') as f:
+        with open(STATE_PATH, "w") as f:
             json.dump(self._settings, f, default=_serialize)
 
     def __getattr__(self, name: str, /) -> Any:
-            if name in self.PASSTHROUGH:
-                # passthrough
-                return getattr(super(), name)
-            elif hasattr(self._args, name):
-                return getattr(self._args, name)
-            elif name in self._settings:
-                return self._settings[name]  # type: ignore[literal-required]
-            return getattr(super(), name)
-    
+        # 1. Проверяем _args
+        if self._args is not None and hasattr(self._args, name):
+            return getattr(self._args, name)
+
+        # 2. Проверяем ключи в _settings
+        if name in self._settings:
+            return self._settings[name]  # type: ignore[literal-required]
+
+        # 3. Если ничего не найдено, выбрасываем стандартный AttributeError
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+
     def __setattr__(self, name: str, value: Any, /) -> None:
         if name in self.PASSTHROUGH:
-            # passthrough
-            return super().__setattr__(name, value)
+            super().__setattr__(name, value)
         elif name in self._settings:
             self._settings[name] = value  # type: ignore[literal-required]
-            return
-        raise TypeError(f"{name} is missing a custom setter")
+        else:
+            raise TypeError(f"'{name}' is missing a custom setter or non-existent in settings")
 
 class SettingsFile(TypedDict):
     proxy: URL
