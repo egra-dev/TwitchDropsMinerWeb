@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Any, TypedDict, TYPE_CHECKING
 
 from yarl import URL
@@ -14,12 +15,14 @@ if TYPE_CHECKING:
 
 class StateFile(TypedDict):
     restartRequest: bool
+    name: str
 
 class State:
     PASSTHROUGH = ("_settings", "_args")
 
     def __init__(self):
         self._settings: StateFile = json_load(STATE_PATH, default_state)
+        self._settings.name = os.getenv('CONTAINER_NAME')
 
     def save(self) -> None:
         with open(STATE_PATH, 'w') as f:
