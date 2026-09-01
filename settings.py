@@ -41,7 +41,6 @@ class State:
             return super().__setattr__(name, value)
         elif name in self._settings:
             self._settings[name] = value  # type: ignore[literal-required]
-            self._altered = True
             return
         raise TypeError(f"{name} is missing a custom setter")
 
