@@ -666,6 +666,8 @@ class Twitch:
             except aiohttp.ContentTypeError as exc:
                 raise RequestException(_("login", "unexpected_content")) from exc
 
+        raise RequestException()
+
     def reload(self):
         """Signal the application to reload"""
         logger.info("Changing state to RELOAD")
