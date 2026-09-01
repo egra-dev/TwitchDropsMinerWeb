@@ -44,6 +44,15 @@ if [ ! -f /data/settings.json ]; then
     "tray_notifications": true
 }
 EOL
+
+if [ ! -f /data/status.json ]; then
+    echo "Creating default status.json in /data directory"
+    cat > /data/status.json << 'EOL'
+{
+    "restartRequest": false
+}
+EOL
+
 fi
 
 # Create empty cookies.jar if it doesn't exist
