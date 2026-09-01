@@ -1353,7 +1353,9 @@ def reloadServer(username=None):
     """Reload the server"""
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
-    
+
+    raise ValueError("Server restart")
+
     try:
         twitch = tdm_instance
         
