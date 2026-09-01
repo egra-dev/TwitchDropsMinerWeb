@@ -1354,7 +1354,7 @@ def reloadServer(username=None):
     if tdm_instance is None:
         return jsonify({'error': 'Miner not initialized'}), 503
 
-    raise ValueError("Server restart")
+    sys.exit(1)
 
     try:
         twitch = tdm_instance
