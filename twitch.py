@@ -726,7 +726,7 @@ class Twitch:
         full_cleanup: bool = False
         channels: Final[OrderedDict[int, Channel]] = self.channels
         self.change_state(State.INVENTORY_FETCH)
-        while True:
+        while self.exit is False:
             logger.info(f"Waiting for state change. Current state: {self._state}")
             if self._state is State.RELOAD:
                 logger.info("Reloading application state")
@@ -1016,6 +1016,8 @@ class Twitch:
             logger.info("Waiting for next state change")
             await self._state_change.wait()
         
+        raise new ExitRequest()
+
         logger.error("_run() method completed unexpectedly - this should never happen!")
 
     async def _watch_sleep(self, delay: float) -> None:
