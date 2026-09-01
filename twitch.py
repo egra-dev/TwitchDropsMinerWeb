@@ -1016,7 +1016,7 @@ class Twitch:
             logger.info("Waiting for next state change")
             await self._state_change.wait()
         
-        raise new ExitRequest()
+        raise ExitRequest()
 
         logger.error("_run() method completed unexpectedly - this should never happen!")
 
