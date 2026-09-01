@@ -12,9 +12,10 @@ import json
 if TYPE_CHECKING:
     from main import ParsedArgs
 
-class StateFile:
+class StateFile(TypedDict):
     restartRequest: bool
 
+class State:
     def __init__(self):
         self._statusSettings: StateFile = json_load(STATE_PATH, default_state)
 
@@ -36,9 +37,6 @@ class StateFile:
             return
         
         raise TypeError(f"{name} is missing a custom setter")
-
-    
-
 
 class SettingsFile(TypedDict):
     proxy: URL

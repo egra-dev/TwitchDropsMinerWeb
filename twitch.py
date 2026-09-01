@@ -13,7 +13,7 @@ from contextlib import suppress, asynccontextmanager
 from typing import Any, Literal, Final, NoReturn, overload, cast, TYPE_CHECKING
 
 import aiohttp
-from settings import StateFile
+from settings import State
 from yarl import URL
 import sys
 
@@ -480,9 +480,9 @@ class _AuthState:
 
 
 class Twitch:
-    def __init__(self, settings: Settings, state: StateFile):
+    def __init__(self, settings: Settings, state: State):
         self.settings: Settings = settings
-        self.state: StateFile = state
+        self.state: State = state
         # State management
         self._state: State = State.IDLE
         self._state_change = asyncio.Event()

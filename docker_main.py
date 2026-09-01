@@ -27,7 +27,7 @@ apply_headless_patches()
 from web.app import run_web_server, initialize
 from translate import _
 from twitch import Twitch
-from settings import Settings, StateFile, default_settings
+from settings import Settings, State, default_settings
 from version import __version__
 from exceptions import CaptchaRequired
 from utils import lock_file, json_load, json_save
@@ -118,7 +118,7 @@ async def main():
     try:
         # Create settings with our ParsedArgs instance
         settings = Settings(args)
-        state = StateFile()
+        state = State()
         
         # Force headless/web mode for Docker environment
         settings.gui_enabled = False
