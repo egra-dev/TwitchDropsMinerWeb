@@ -156,6 +156,28 @@ app.config['JSON_SORT_KEYS'] = False
 logger = logging.getLogger('web_interface')
 logger.setLevel(logging.INFO)
 
+# Create logs directory if it doesn't exist
+log_dir = os.path.join(WORKING_DIR, 'data')
+os.makedirs(log_dir, exist_ok=True)
+
+# Add file handler for logging to file
+log_file = os.path.join(log_dir, 'log.txt')
+file_handler = logging.FileHandler(log_file)
+file_handler.setLevel(logging.INFO)
+
+# Create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Add handler to logger
+logger.addHandler(file_handler)
+
+# Also add console handler for output
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+
 
 @app.route('/login')
 def login():
