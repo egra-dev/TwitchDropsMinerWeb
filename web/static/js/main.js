@@ -827,7 +827,7 @@ function refreshData(options = {}) {
     const refreshCount = parseInt(localStorage.getItem('refreshCount') || '0', 10) + 1;
     localStorage.setItem('refreshCount', refreshCount.toString());
     
-    if (refreshCount % 3 === 0) {
+    if (refreshCount % 1 === 0) {
         fetchPromises.push(fetchDiagnostics().catch(error => ({ error })));
     }
       // When all fetches are complete, update the state
