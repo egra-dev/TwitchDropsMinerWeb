@@ -38,7 +38,7 @@ main_event_loop = None
 progress_monitor_thread = None
 last_progress_value = None
 last_progress_time = None
-progress_check_interval = 2 * 60 
+progress_check_interval = 10 * 60 
 progress_stalled = False
 
 # Initialize the event loop reference
