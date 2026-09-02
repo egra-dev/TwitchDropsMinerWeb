@@ -480,10 +480,30 @@ function setupEventListeners() {
         addPriorityButton.addEventListener('click', addPriorityGame);
     }
     
+    // Add priority game on Enter key
+    const gameInputPriority = document.getElementById('game-input-priority');
+    if (gameInputPriority) {
+        gameInputPriority.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addPriorityGame();
+            }
+        });
+    }
+    
     // Add exclusion game button
     const addExcludeButton = document.getElementById('add-exclude-game');
     if (addExcludeButton) {
         addExcludeButton.addEventListener('click', addExclusionGame);
+    }
+    
+    // Add exclusion game on Enter key
+    const gameInputExclude = document.getElementById('game-input-exclude');
+    if (gameInputExclude) {
+        gameInputExclude.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addExclusionGame();
+            }
+        });
     }
       // Login button
     const loginButton = document.getElementById('login-button');
@@ -1981,58 +2001,43 @@ function updateExclusionList(exclusionList) {
 
 // Function to update game selection dropdowns
 function updateGameSelectOptions(games) {
-    const prioritySelect = document.getElementById('game-select-priority');
-    const excludeSelect = document.getElementById('game-select-exclude');
+    const priorityInput = document.getElementById('game-input-priority');
+    const excludeInput = document.getElementById('game-input-exclude');
+    const priorityList = document.getElementById('priority-games-list');
+    const excludeList = document.getElementById('exclude-games-list');
     
-    if (!prioritySelect || !excludeSelect) return;
+    if (!priorityList || !excludeList) return;
     
     // Sort games alphabetically
     games.sort();
     
-    // Reset dropdowns
-    prioritySelect.innerHTML = '';
-    excludeSelect.innerHTML = '';
+    // Clear existing options
+    priorityList.innerHTML = '';
+    excludeList.innerHTML = '';
     
-    // Add placeholder option
-    const priorityPlaceholder = document.createElement('option');
-    priorityPlaceholder.value = '';
-    priorityPlaceholder.textContent = 'Select a game to add to priority';
-    priorityPlaceholder.disabled = true;
-    priorityPlaceholder.selected = true;
-    prioritySelect.appendChild(priorityPlaceholder);
-    
-    const excludePlaceholder = document.createElement('option');
-    excludePlaceholder.value = '';
-    excludePlaceholder.textContent = 'Select a game to exclude';
-    excludePlaceholder.disabled = true;
-    excludePlaceholder.selected = true;
-    excludeSelect.appendChild(excludePlaceholder);
-    
-    // Add game options
+    // Add game options to datalists
     games.forEach(game => {
         // For priority list
         const priorityOption = document.createElement('option');
         priorityOption.value = game;
-        priorityOption.textContent = game;
-        prioritySelect.appendChild(priorityOption);
+        priorityList.appendChild(priorityOption);
         
         // For exclusion list
         const excludeOption = document.createElement('option');
         excludeOption.value = game;
-        excludeOption.textContent = game;
-        excludeSelect.appendChild(excludeOption);
+        excludeList.appendChild(excludeOption);
     });
 }
 
 // Function to add a game to the priority list
 function addPriorityGame() {
-    const selectElement = document.getElementById('game-select-priority');
-    if (!selectElement || !selectElement.value) return;
+    const inputElement = document.getElementById('game-input-priority');
+    if (!inputElement || !inputElement.value.trim()) return;
     
-    const game = selectElement.value;
+    const game = inputElement.value.trim();
     
-    // Reset selection
-    selectElement.selectedIndex = 0;
+    // Reset input
+    inputElement.value = '';
     
     // Check if game is already in priority list
     if (settingsData.priority && settingsData.priority.includes(game)) {
@@ -2127,13 +2132,13 @@ function movePriorityItem(index, direction) {
 
 // Function to add a game to the exclusion list
 function addExclusionGame() {
-    const selectElement = document.getElementById('game-select-exclude');
-       if (!selectElement || !selectElement.value) return;
+    const inputElement = document.getElementById('game-input-exclude');
+    if (!inputElement || !inputElement.value.trim()) return;
     
-    const game = selectElement.value;
+    const game = inputElement.value.trim();
     
-    // Reset selection
-    selectElement.selectedIndex = 0;
+    // Reset input
+    inputElement.value = '';
     
     // Check if game is already in exclusion list
     if (settingsData.exclude && settingsData.exclude.includes(game)) {
