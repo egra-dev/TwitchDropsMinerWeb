@@ -27,7 +27,7 @@ from version import __version__
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import auth module (from the web directory)
-from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required
+from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required, WEB_ACCESS_PATH
 
 
 # Global reference to the TDM instance - will be set by the main app
@@ -175,12 +175,12 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 
-@app.route('/login')
+@app.route(f'/{WEB_ACCESS_PATH}/login')
 def login():
     """Render the login page"""
     return render_template('login.html')
 
-@app.route('/')
+@app.route(f'/{WEB_ACCESS_PATH}/')
 @login_required
 def index(username=None):
     """Render the main dashboard page"""

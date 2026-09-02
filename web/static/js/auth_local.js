@@ -114,7 +114,7 @@ function handleLogin(event) {
             localStorage.setItem('auth_token', data.token);
             
             // Redirect to the dashboard
-            window.location.href = '/';
+            window.location.href = `${getWebBasePath()}/`;
         } else {
             // Show error message
             if (errorMessage) {
