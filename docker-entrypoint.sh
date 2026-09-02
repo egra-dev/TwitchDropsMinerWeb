@@ -55,6 +55,15 @@ if [ ! -f /data/status.json ]; then
 EOL
 fi
 
+if [ ! -f /data/log.txt ]; then
+    echo "Creating default log.txt in /data directory"
+    cat > /data/log.txt << 'EOL'
+{
+    "restartRequest": false
+}
+EOL
+fi
+
 # Create empty cookies.jar if it doesn't exist
 if [ ! -f /data/cookies.jar ]; then
     echo "Creating empty cookies.jar in /data directory"
@@ -74,10 +83,10 @@ if [ ! -f /data/blacklist.json ]; then
 fi
 
 # Remove existing files if they exist to avoid symbolic link errors
-rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json
+rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json /app/log.txt
 
 # Ensure proper permissions on the data files
-chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/blacklist.json /data/status.json
+chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/blacklist.json /data/status.json /data/log.txt
 
 # Create symbolic links
 ln -sf /data/settings.json /app/settings.json
@@ -85,12 +94,13 @@ ln -sf /data/cookies.jar /app/cookies.jar
 ln -sf /data/credentials.json /app/credentials.json
 ln -sf /data/blacklist.json /app/blacklist.json
 ln -sf /data/status.json /app/status.json
+ln -sf /data/log.txt /app/log.txt
 
 # Debug permissions
 echo "Current user: $(whoami)"
 echo "File permissions:"
 ls -la /data/
-ls -la /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json
+ls -la /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json /app/log.txt
 
 echo "Verifying Python imports..."
 python -c "import sys; print(sys.path)"
