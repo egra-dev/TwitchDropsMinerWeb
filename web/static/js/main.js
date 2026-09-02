@@ -713,8 +713,6 @@ function setupEventListeners() {
             .then(data => {
                 if (data.success) {
                     showToast('Success', 'Server successfully reloaded', 'success');
-                    // Refresh data after a short delay
-                    setTimeout(reloadPage, 2000);
                 } else {
                     showToast('Error', data.error || 'Failed to reload the server', 'error');
                 }
