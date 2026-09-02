@@ -18,11 +18,6 @@ function getAuthToken() {
     return localStorage.getItem('auth_token');
 }
 
-function getWebBasePath() {
-    const firstPathPart = window.location.pathname.split('/').filter(Boolean)[0];
-    return firstPathPart ? `/${firstPathPart}` : '';
-}
-
 /**
  * Check if the authentication token is valid
  * @returns {Promise<boolean>} Promise that resolves to true if valid, false otherwise
@@ -65,7 +60,7 @@ async function logout() {
     localStorage.removeItem('username');
 
     // Redirect to login page
-    window.location.href = `${getWebBasePath()}/login`;
+    window.location.href = '/login';
 }
 
 /**
@@ -74,11 +69,11 @@ async function logout() {
  */
 function initAuth() {
     // If we're on the login page, skip validation
-    if (window.location.pathname.endsWith('/login')) return;
+    if (window.location.pathname === '/login') return;
 
     // If we're not authenticated, redirect to login page
     if (!isAuthenticated()) {
-        window.location.href = `${getWebBasePath()}/login`;
+        window.location.href = '/login';
         return;
     }
     
@@ -87,7 +82,7 @@ function initAuth() {
         // If token is invalid, clear it and redirect to login
         localStorage.removeItem('auth_token');
         localStorage.removeItem('username');
-        window.location.href = `${getWebBasePath()}/login`;
+        window.location.href = '/login';
     });
 
     // Add logout button event listener

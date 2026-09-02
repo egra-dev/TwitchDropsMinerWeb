@@ -8,7 +8,6 @@ import json
 import secrets
 import time
 import datetime
-import logging
 from functools import wraps
 from flask import request, jsonify, redirect, url_for
 import jwt
@@ -16,22 +15,11 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from dotenv import load_dotenv
 
-logger = logging.getLogger(__name__)
-
 # Load environment variables from .env file
 load_dotenv()
 
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 CREDENTIALS_PATH = os.path.join(DATA_DIR, 'credentials.json')
-
-WEB_ACCESS_PATH = os.environ.get('WEB_ACCESS_PATH')
-if not WEB_ACCESS_PATH:
-    WEB_ACCESS_PATH = secrets.token_urlsafe(12)
-    env_path = os.path.join(DATA_DIR, '.env')
-    with open(env_path, 'a', encoding='utf-8') as env_file:
-        env_file.write(f'\nWEB_ACCESS_PATH={WEB_ACCESS_PATH}\n')
-
-logger.warning('Web access path: /%s', WEB_ACCESS_PATH)
 
 # JWT settings - get secret from environment variable or generate and save to .env file
 JWT_SECRET = os.environ.get('JWT_SECRET')
