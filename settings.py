@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 class StateFile(TypedDict):
     restartRequest: bool
     container_name: str
+    web_port: int
 
 class State:
     PASSTHROUGH = {"_settings", "_args"}
@@ -25,6 +26,7 @@ class State:
         self._args = args
 
         self._settings["container_name"] = os.getenv("CONTAINER_NAME", "")
+        self._settings["web_port"] = args.web_port
 
     def save(self) -> None:
         with open(STATE_PATH, "w") as f:

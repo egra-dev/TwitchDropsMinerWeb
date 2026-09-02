@@ -118,7 +118,7 @@ async def main():
     try:
         # Create settings with our ParsedArgs instance
         settings = Settings(args)
-        state = State()
+        state = State(args)
         
         # Force headless/web mode for Docker environment
         settings.gui_enabled = False
