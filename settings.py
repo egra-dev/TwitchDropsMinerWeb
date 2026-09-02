@@ -76,7 +76,6 @@ default_settings: SettingsFile = {
 
 default_state: StateFile = {
     "restartRequest": False,
-    "container_name": "None"
 }
 
 
