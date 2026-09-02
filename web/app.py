@@ -12,6 +12,7 @@ import time
 import requests
 import json
 import subprocess
+import threading
 
 # Add parent directory to path for imports
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -33,11 +34,24 @@ from auth import is_setup_needed, create_user, validate_credentials, generate_to
 tdm_instance = None
 main_event_loop = None
 
+# Progress monitoring globals
+progress_monitor_thread = None
+last_progress_value = None
+last_progress_time = None
+progress_check_interval = 1 * 60 
+progress_stalled = False
+
 # Initialize the event loop reference
 def initialize(loop, twitch_instance):
-    global tdm_instance, main_event_loop
+    global tdm_instance, main_event_loop, progress_monitor_thread
     tdm_instance = twitch_instance
     main_event_loop = loop
+    
+    # Start progress monitoring thread
+    if progress_monitor_thread is None:
+        progress_monitor_thread = threading.Thread(target=_progress_monitor_loop, daemon=True)
+        progress_monitor_thread.start()
+        logger.info("Progress monitor thread started")
 
 
 def _get_gui():
@@ -47,6 +61,89 @@ def _get_gui():
     if tdm_instance is not None and hasattr(tdm_instance, 'gui'):
         return tdm_instance.gui
     return None
+
+
+def _get_current_progress():
+    """Get the current drop progress value.
+    Returns the current_minutes value if a drop is active, None otherwise."""
+    if tdm_instance is None:
+        return None
+    
+    try:
+        gui = _get_gui()
+        
+        # Try to get progress from GUI stub first
+        if gui and hasattr(gui, 'progress') and hasattr(gui.progress, 'current_drop'):
+            drop = gui.progress.current_drop
+            if drop is not None and hasattr(drop, 'current_minutes'):
+                return drop.current_minutes
+        
+        # Fall back to get_active_drop
+        watching_channel = tdm_instance.watching_channel.get_with_default(None)
+        active_drop = tdm_instance.get_active_drop(watching_channel)
+        if active_drop is not None and hasattr(active_drop, 'current_minutes'):
+            return active_drop.current_minutes
+        
+        return None
+    except Exception as e:
+        logger.error(f"Error getting current progress: {e}")
+        return None
+
+
+def _progress_monitor_loop():
+    global last_progress_value, last_progress_time, progress_stalled
+    
+    while True:
+        try:
+            sleep(progress_check_interval)
+            
+            if tdm_instance is None:
+                logger.debug("Miner not initialized, skipping progress check")
+                continue
+            
+            current_progress = _get_current_progress()
+            
+            # Only monitor if there's an active drop
+            if current_progress is None:
+                last_progress_value = None
+                last_progress_time = None
+                progress_stalled = False
+                logger.debug("No active drop, progress check skipped")
+                continue
+            
+            current_time = time.time()
+            
+            # First check - just record the value
+            if last_progress_value is None:
+                last_progress_value = current_progress
+                last_progress_time = current_time
+                logger.info(f"Progress monitoring started: {current_progress} minutes")
+                continue
+            
+            # Check if progress has changed
+            if current_progress == last_progress_value:
+                
+                if not progress_stalled:
+                    logger.warning(f"Drop progress stalled at {current_progress} minutes, initiating restart")
+                    progress_stalled = True
+                    try:
+                        restart_container()
+                        logger.info("Container restart triggered due to stalled progress")
+                    except Exception as e:
+                        logger.error(f"Error restarting container: {e}")
+            else:
+                # Progress has changed
+                if progress_stalled:
+                    logger.info(f"Progress resumed: {last_progress_value} -> {current_progress} minutes")
+                    progress_stalled = False
+                
+                logger.debug(f"Progress updated: {last_progress_value} -> {current_progress} minutes")
+                last_progress_value = current_progress
+                last_progress_time = current_time
+        
+        except Exception as e:
+            logger.error(f"Error in progress monitor loop: {e}")
+            sleep(5)  # Wait before retrying
 
 # Configure Flask app
 app = Flask(__name__, 
