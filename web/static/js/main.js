@@ -384,6 +384,14 @@ function setupTabNavigation() {
                         clearUIData();
                     }
                 });
+            } else if (tabId === 'settings') {
+                // If we're switching to settings tab, refresh data
+                refreshData({
+                    refreshChannels: true,
+                    refreshCampaigns: true,
+                    refreshInventory: true,
+                    refreshStatus: true
+                });
             }
             
             // Save scroll position for current tab before switching
