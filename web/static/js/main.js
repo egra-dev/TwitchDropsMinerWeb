@@ -11,7 +11,7 @@ let campaignsData = [];
 let inventoryData = { claimed: [], pending: [] };
 let settingsData = {};
 let isDataLoading = false;
-let wasSessionActive = false; // Track previous session state for connection detection
+let wasSessionActive = true; // Track previous session state for connection detection
 
 // Helper function to get auth headers
 function getAuthHeaders() {
