@@ -11,6 +11,7 @@ let campaignsData = [];
 let inventoryData = { claimed: [], pending: [] };
 let settingsData = {};
 let isDataLoading = false;
+let wasSessionActive = false; // Track previous session state for connection detection
 
 // Helper function to get auth headers
 function getAuthHeaders() {
@@ -1694,6 +1695,17 @@ function updateDiagnosticUI(data) {
     // Update version
     const appVersion = document.getElementById('app-version');
     if (appVersion) appVersion.textContent = data.system_info.version || 'Unknown';
+    
+    // Check if connection status changed from disconnected to connected
+    const isCurrentlyConnected = data.miner_state.session_active;
+    if (!wasSessionActive && isCurrentlyConnected) {
+        // Connection status changed from Disconnected to Connected
+        wasSessionActive = true;
+        // Reload the page to refresh all data
+        location.reload();
+        return; // Exit early since page will reload
+    }
+    wasSessionActive = isCurrentlyConnected;
     
     // Update connection status
     const connectionDetail = document.getElementById('connection-detail');
