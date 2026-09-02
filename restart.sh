@@ -1,1 +1,0 @@
-curl --unix-socket /var/run/docker.sock -X POST http://localhost/v1.41/containers/$CONTAINER_NAME/restart
