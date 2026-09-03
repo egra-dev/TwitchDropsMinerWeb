@@ -69,7 +69,7 @@ def initialize(loop, twitch_instance):
 def _reload_loop():
     while True:
         try:
-            sleep(3 * 60)
+            sleep(20 * 60)
 
             if tdm_instance is None or tdm_instance.expiration_handled:
                 continue
