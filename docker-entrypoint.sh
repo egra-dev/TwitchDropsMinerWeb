@@ -76,10 +76,26 @@ if [ ! -f /data/credentials.json ]; then
     echo '{"users": [], "setup_complete": false}' > /data/credentials.json
 fi
 
-# Create activation.json if it doesn't exist (the activation key is configured here)
-if [ ! -f /data/activation.json ]; then
-    echo '{"ActivationKey": "", "WasActivation": false}' > /data/activation.json
-fi
+# Create activation.json and generate its key before starting the application
+python - <<'PY'
+import json
+import os
+import secrets
+
+activation_path = "/data/activation.json"
+
+if os.path.exists(activation_path):
+    with open(activation_path, "r") as activation_file:
+        activation = json.load(activation_file)
+else:
+    activation = {"ActivationKey": "", "WasActivation": False}
+
+if not activation.get("WasActivation", False) and not activation.get("ActivationKey"):
+    activation["ActivationKey"] = secrets.token_urlsafe(24)
+    with open(activation_path, "w") as activation_file:
+        json.dump(activation, activation_file, indent=2)
+    print("Generated activation key. See /data/activation.json")
+PY
 
 # Create empty blacklist.json if it doesn't exist (for authentication)
 if [ ! -f /data/blacklist.json ]; then
