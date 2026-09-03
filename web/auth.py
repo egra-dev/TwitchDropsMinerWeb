@@ -20,6 +20,7 @@ load_dotenv()
 
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 CREDENTIALS_PATH = os.path.join(DATA_DIR, 'credentials.json')
+ACTIVATION_PATH = os.path.join(DATA_DIR, 'activation.json')
 
 # JWT settings - get secret from environment variable or generate and save to .env file
 JWT_SECRET = os.environ.get('JWT_SECRET')
@@ -53,6 +54,45 @@ JWT_EXPIRY_DAYS = 7  # Token expires after 7 days
 
 # Argon2 hasher
 ph = PasswordHasher()
+
+def init_activation():
+    """Initialize and read the activation file."""
+    if not os.path.exists(ACTIVATION_PATH):
+        activation = {"ActivationKey": secrets.token_urlsafe(24), "WasActivation": False}
+        with open(ACTIVATION_PATH, 'w') as f:
+            json.dump(activation, f, indent=2)
+        return activation
+
+    with open(ACTIVATION_PATH, 'r') as f:
+        activation = json.load(f)
+
+    if not activation.get("ActivationKey") and not activation.get("WasActivation", False):
+        activation["ActivationKey"] = secrets.token_urlsafe(24)
+        with open(ACTIVATION_PATH, 'w') as f:
+            json.dump(activation, f, indent=2)
+
+    return activation
+
+def is_activation_needed():
+    """Return whether the instance still needs its initial activation."""
+    return not bool(init_activation().get("WasActivation", False))
+
+def activate_instance(activation_key):
+    """Validate the configured activation key and mark the instance activated."""
+    if not activation_key:
+        return False, "Activation key is required"
+
+    activation = init_activation()
+    expected_key = str(activation.get("ActivationKey", ""))
+    if not expected_key or not secrets.compare_digest(str(activation_key), expected_key):
+        return False, "Invalid activation key"
+
+    activation["WasActivation"] = True
+    temporary_path = f"{ACTIVATION_PATH}.tmp"
+    with open(temporary_path, 'w') as f:
+        json.dump(activation, f)
+    os.replace(temporary_path, ACTIVATION_PATH)
+    return True, "Activation successful"
 
 def init_credentials():
     """Initialize credentials file if it doesn't exist"""
@@ -247,6 +287,9 @@ def auth_required(f):
     """Decorator to require authentication for API routes"""
     @wraps(f)
     def decorated(*args, **kwargs):
+        if is_activation_needed():
+            return jsonify({'error': 'Activation required'}), 403
+
         # Get token from Authorization header
         token = None
         if 'Authorization' in request.headers:
@@ -273,6 +316,9 @@ def login_required(f):
     """Decorator to redirect unauthenticated users to login page for web routes"""
     @wraps(f)
     def decorated(*args, **kwargs):
+        if is_activation_needed():
+            return redirect(url_for('activation'))
+
         # Get token from session or cookie
         token = request.cookies.get('auth_token')
         

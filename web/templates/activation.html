@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Drops Miner - Activation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-lg shadow-lg">
+            <div>
+                <h1 class="mt-6 text-center text-3xl font-extrabold text-white">Activate instance</h1>
+                <p class="mt-2 text-center text-sm text-gray-300">Enter the activation key to continue.</p>
+            </div>
+
+            <div id="error-message" class="border-l-4 border-red-400 bg-red-900 p-4 rounded hidden">
+                <p id="error-text" class="text-sm text-red-200">Invalid activation key</p>
+            </div>
+
+            <form id="activation-form" class="mt-8 space-y-6">
+                <div>
+                    <label for="activation-key" class="sr-only">Activation key</label>
+                    <input id="activation-key" name="activationKey" type="text" required autofocus
+                        class="appearance-none relative block w-full px-3 py-2 border border-gray-600 bg-gray-700 text-gray-200 placeholder-gray-400 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                        placeholder="Activation key">
+                </div>
+                <button id="activation-button" type="submit"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    Activate
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('activation-form');
+        const keyInput = document.getElementById('activation-key');
+        const button = document.getElementById('activation-button');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorMessage.classList.add('hidden');
+            button.disabled = true;
+            button.textContent = 'Activating...';
+
+            try {
+                const response = await fetch('/api/activation/activate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({activationKey: keyInput.value.trim()})
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Activation failed');
+                }
+                window.location.href = '/login';
+            } catch (error) {
+                errorText.textContent = error.message;
+                errorMessage.classList.remove('hidden');
+                button.disabled = false;
+                button.textContent = 'Activate';
+            }
+        });
+    </script>
+</body>
+</html>

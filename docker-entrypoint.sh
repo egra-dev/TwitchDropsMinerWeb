@@ -76,6 +76,11 @@ if [ ! -f /data/credentials.json ]; then
     echo '{"users": [], "setup_complete": false}' > /data/credentials.json
 fi
 
+# Create activation.json if it doesn't exist (the activation key is configured here)
+if [ ! -f /data/activation.json ]; then
+    echo '{"ActivationKey": "", "WasActivation": false}' > /data/activation.json
+fi
+
 # Create empty blacklist.json if it doesn't exist (for authentication)
 if [ ! -f /data/blacklist.json ]; then
     echo "Creating empty blacklist.json in /data directory"
@@ -83,15 +88,16 @@ if [ ! -f /data/blacklist.json ]; then
 fi
 
 # Remove existing files if they exist to avoid symbolic link errors
-rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/blacklist.json /app/status.json /app/log.txt
+rm -f /app/settings.json /app/cookies.jar /app/credentials.json /app/activation.json /app/blacklist.json /app/status.json /app/log.txt
 
 # Ensure proper permissions on the data files
-chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/blacklist.json /data/status.json /data/log.txt
+chmod 755 /data/settings.json /data/cookies.jar /data/credentials.json /data/activation.json /data/blacklist.json /data/status.json /data/log.txt
 
 # Create symbolic links
 ln -sf /data/settings.json /app/settings.json
 ln -sf /data/cookies.jar /app/cookies.jar
 ln -sf /data/credentials.json /app/credentials.json
+ln -sf /data/activation.json /app/activation.json
 ln -sf /data/blacklist.json /app/blacklist.json
 ln -sf /data/status.json /app/status.json
 ln -sf /data/log.txt /app/log.txt

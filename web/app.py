@@ -27,7 +27,7 @@ from version import __version__
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import auth module (from the web directory)
-from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required
+from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required, is_activation_needed, activate_instance
 
 
 # Global reference to the TDM instance - will be set by the main app
@@ -178,7 +178,33 @@ logger.addHandler(console_handler)
 @app.route('/login')
 def login():
     """Render the login page"""
+    if is_activation_needed():
+        return redirect(url_for('activation'))
     return render_template('login.html')
+
+@app.route('/activation')
+def activation():
+    """Render the initial activation page."""
+    if not is_activation_needed():
+        return redirect(url_for('login'))
+    return render_template('activation.html')
+
+@app.route('/api/activation/status')
+def activation_status():
+    """Return whether initial activation is still required."""
+    return jsonify({'needsActivation': is_activation_needed()})
+
+@app.route('/api/activation/activate', methods=['POST'])
+def activation_activate():
+    """Validate the initial activation key."""
+    if not is_activation_needed():
+        return jsonify({'success': True, 'message': 'Already activated'})
+
+    data = request.get_json() or {}
+    success, message = activate_instance(data.get('activationKey'))
+    if not success:
+        return jsonify({'success': False, 'message': message}), 400
+    return jsonify({'success': True, 'message': message})
 
 @app.route('/')
 @login_required
@@ -196,6 +222,9 @@ def check_setup():
 @app.route('/api/auth/login', methods=['POST'])
 def auth_login():
     """Handle local authentication"""
+    if is_activation_needed():
+        return jsonify({'success': False, 'message': 'Activation required'}), 403
+
     data = request.get_json() or {}
     
     username = data.get('username')

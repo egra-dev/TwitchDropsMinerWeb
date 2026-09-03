@@ -32,6 +32,7 @@ data/credentials.json
 data/blacklist.json
 .env
 credentials.json
+activation.json
 blacklist.json
 .DS_Store
 *.app
