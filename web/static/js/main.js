@@ -12,6 +12,7 @@ let inventoryData = { claimed: [], pending: [] };
 let settingsData = {};
 let isDataLoading = false;
 let wasSessionActive = true; // Track previous session state for connection detection
+let activationExpiration = null;
 
 // Helper function to get auth headers
 function getAuthHeaders() {
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupTabNavigation();
     setupEventListeners();
+    setInterval(() => updateActivationExpiration(), 1000);
     
     // Restore scroll positions on initial load
     const activeTabButton = document.querySelector('.tab-button.border-purple-600');
@@ -1304,6 +1306,8 @@ function checkLoginStatus() {
 
 // Update the status UI with data received from API
 function updateStatusUI(data) {
+    updateActivationExpiration(data.activation_expiration);
+
     // Update mining status text
     const miningStatus = document.getElementById('mining-status');
     if (miningStatus) {
@@ -1438,6 +1442,33 @@ function updateStatusUI(data) {
             currentDrop.classList.remove('text-gray-500');
         }
     }
+}
+
+function updateActivationExpiration(expirationTime) {
+    const expirationElement = document.getElementById('activation-time-remaining');
+    if (!expirationElement) return;
+
+    if (expirationTime !== undefined) {
+        activationExpiration = expirationTime;
+    }
+
+    if (!activationExpiration) {
+        expirationElement.textContent = 'Not activated';
+        return;
+    }
+
+    const remaining = new Date(activationExpiration).getTime() - Date.now();
+    if (remaining <= 0) {
+        expirationElement.textContent = 'Expired';
+        return;
+    }
+
+    const totalSeconds = Math.floor(remaining / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    expirationElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
 // Update the channels UI with data

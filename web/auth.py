@@ -8,6 +8,7 @@ import json
 import secrets
 import time
 import datetime
+import calendar
 from functools import wraps
 from flask import request, jsonify, redirect, url_for
 import jwt
@@ -88,6 +89,18 @@ def activate_instance(activation_key):
         return False, "Invalid activation key"
 
     activation["WasActivation"] = True
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+    next_month = current_time.month % 12 + 1
+    next_year = current_time.year + (current_time.month // 12)
+    expiration_day = min(
+        current_time.day,
+        calendar.monthrange(next_year, next_month)[1]
+    )
+    activation["Expiration-time"] = current_time.replace(
+        year=next_year,
+        month=next_month,
+        day=expiration_day
+    ).isoformat()
     activation_target = os.path.realpath(ACTIVATION_PATH)
     temporary_path = f"{activation_target}.tmp"
     with open(temporary_path, 'w') as f:

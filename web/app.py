@@ -27,7 +27,7 @@ from version import __version__
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import auth module (from the web directory)
-from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required, is_activation_needed, activate_instance
+from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required, is_activation_needed, activate_instance, init_activation
 
 
 # Global reference to the TDM instance - will be set by the main app
@@ -297,6 +297,7 @@ def status(username=None):
 
     try:
         twitch = tdm_instance
+        activation = init_activation()
         gui = _get_gui()
 
         # State
@@ -373,6 +374,7 @@ def status(username=None):
             'current_drop': current_drop,
             'drop_progress': drop_progress,
             'time_remaining': time_remaining,
+            'activation_expiration': activation.get('Expiration-time'),
             'inventory_pending': inventory_pending,
             'icon_state': icon_state,
         }
