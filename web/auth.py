@@ -88,10 +88,11 @@ def activate_instance(activation_key):
         return False, "Invalid activation key"
 
     activation["WasActivation"] = True
-    temporary_path = f"{ACTIVATION_PATH}.tmp"
+    activation_target = os.path.realpath(ACTIVATION_PATH)
+    temporary_path = f"{activation_target}.tmp"
     with open(temporary_path, 'w') as f:
         json.dump(activation, f)
-    os.replace(temporary_path, ACTIVATION_PATH)
+    os.replace(temporary_path, activation_target)
     return True, "Activation successful"
 
 def init_credentials():
