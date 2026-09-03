@@ -91,8 +91,8 @@ def _stop_viewing_after_expiration():
     """Stop viewing on the main event loop after activation expiration."""
     if tdm_instance is None:
         return
-    tdm_instance.stop_watching()
-    tdm_instance.change_state(State.IDLE)
+    
+    tdm_instance.reload()
 
 
 def _get_gui():
