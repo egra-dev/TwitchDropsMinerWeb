@@ -36,6 +36,7 @@ main_event_loop = None
 
 # Progress monitoring globals
 progress_monitor_thread = None
+activation_monitor_thread = None
 last_progress_value = None
 last_progress_time = None
 progress_check_interval = 10 * 60 
@@ -43,7 +44,7 @@ progress_stalled = False
 
 # Initialize the event loop reference
 def initialize(loop, twitch_instance):
-    global tdm_instance, main_event_loop, progress_monitor_thread
+    global tdm_instance, main_event_loop, progress_monitor_thread, activation_monitor_thread
     tdm_instance = twitch_instance
     main_event_loop = loop
     
@@ -52,6 +53,45 @@ def initialize(loop, twitch_instance):
         progress_monitor_thread = threading.Thread(target=_progress_monitor_loop, daemon=True)
         progress_monitor_thread.start()
         logger.info("Progress monitor thread started")
+
+    if activation_monitor_thread is None:
+        activation_monitor_thread = threading.Thread(target=_activation_monitor_loop, daemon=True)
+        activation_monitor_thread.start()
+        logger.info("Activation monitor thread started")
+
+
+def _activation_monitor_loop():
+    """Stop all channel viewing once the activation period expires."""
+    expiration_handled = False
+
+    while True:
+        try:
+            sleep(5)
+            if tdm_instance is None or expiration_handled:
+                continue
+
+            expiration_time = init_activation().get('Expiration-time')
+            if not expiration_time:
+                continue
+
+            expiration = datetime.fromisoformat(expiration_time)
+            if expiration.tzinfo is None:
+                expiration = expiration.replace(tzinfo=timezone.utc)
+
+            if datetime.now(timezone.utc) >= expiration:
+                expiration_handled = True
+                main_event_loop.call_soon_threadsafe(_stop_viewing_after_expiration)
+                logger.warning("Activation expired; stopping all channel viewing")
+        except Exception as e:
+            logger.error(f"Error in activation monitor loop: {e}")
+
+
+def _stop_viewing_after_expiration():
+    """Stop viewing on the main event loop after activation expiration."""
+    if tdm_instance is None:
+        return
+    tdm_instance.stop_watching()
+    tdm_instance.change_state(State.IDLE)
 
 
 def _get_gui():
