@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+k<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +11,10 @@
 
     <!-- Fonts and icons -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,700,800" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Dark Mode CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-mode.css') }}">
@@ -23,7 +25,7 @@
     
     <!-- Authentication Utilities -->
     <script src="{{ url_for('static', filename='js/auth_utils.js') }}"></script>
-      <style>
+    <style>
         /* Progress bar styles - Portainer style */
         .progress-container {
             position: fixed;
@@ -47,7 +49,7 @@
         .progress-container.visible {
             opacity: 1;
         }
-          @keyframes spin {
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
@@ -56,7 +58,7 @@
         body.loading-data .card-container {
             opacity: 0.7;
         }
-          /* Auth modal styles */
+        /* Auth modal styles */
         #auth-modal {
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -86,125 +88,134 @@
     </style>
 </head>
 
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">    <div id="progress-container" class="progress-container">
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">    
+    <div id="progress-container" class="progress-container">
         <div id="progress-bar" class="progress-bar"></div>
-    </div>    <nav id="header" class="bg-purple-900 fixed w-full z-10 top-0 shadow">
-        <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-2 pb-2">            <div class="w-1/2 pl-2 md:pl-0">
-                <a class="text-white text-base xl:text-xl no-underline hover:no-underline font-bold" href="#">
-                    <i class="fas fa-gem text-purple-300 pr-3"></i> Twitch Drops Miner
+    </div>    
+
+<nav id="header" class="bg-purple-900 fixed w-full z-10 top-0 shadow-md">
+        <div class="w-full container mx-auto flex justify-between items-center px-4 md:px-0 py-2">
+            
+            <!-- Левая часть: Логотип -->
+            <div class="flex-shrink-0">
+                <a class="text-white text-lg xl:text-xl no-underline hover:no-underline font-bold flex items-center" href="#">
+                    <i class="fas fa-gem text-purple-400 mr-2"></i> 
+                    <span class="hidden sm:inline">Twitch Drops Miner</span>
+                    <span class="sm:hidden">TDM</span>
                 </a>
-            </div>            <div class="w-1/2 pr-0">
-                <div class="header-controls">
-                    <div class="relative text-sm text-green-200 px-2 pt-1" title="Activation time remaining">
-                        <i class="fas fa-hourglass-half mr-1"></i><span id="activation-time-remaining">Loading...</span>
+            </div>            
+
+            <!-- Правая часть: Индикаторы и Управление -->
+            <div class="flex items-center gap-4">
+                
+                <!-- Инфо-блок (Таймер, Админ, Статус) - скрыт на мобильных, чтобы не ломать верстку -->
+                <div class="hidden lg:flex items-center gap-2 text-xs font-medium">
+                    <!-- Таймер -->
+                    <div class="bg-purple-800 text-purple-200 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" title="Activation time remaining">
+                        <i class="fas fa-hourglass-half mr-1.5 text-purple-400"></i><span id="activation-time-remaining">Loading...</span>
                     </div>
 
-                    <!-- Admin status - show current logged in admin user -->
-                    <div class="relative text-sm text-green-300 px-2 pt-1">
-                        <i class="fas fa-user-shield mr-1"></i><span>Admin: {{ username }}</span>
+                    <!-- Админ и выход -->
+                    <div class="bg-purple-800 text-green-300 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center">
+                        <i class="fas fa-user-shield mr-1.5 text-green-400"></i><span class="mr-2">Admin: {{ username }}</span>
+                        <button id="local-logout-btn" class="text-red-400 hover:text-red-200 border-l border-purple-600 pl-2 ml-1 transition-colors flex items-center" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
                     </div>
                     
-                    <!-- Admin logout button -->
-                    <button id="local-logout-btn" class="text-red-300 hover:text-red-100 px-2 pt-1" title="Logout">
-                        <i class="fas fa-sign-out-alt"></i>
+                    <!-- Статус Twitch -->
+                    <div class="bg-purple-800 text-yellow-300 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" id="user-status">
+                        <i class="fab fa-twitch mr-1.5"></i><span>Not connected</span>
+                    </div>
+                </div>
+
+                <!-- Блок кнопок (Тема, Режим, Обновить) -->
+                <div class="flex items-center gap-2">
+                    
+                    <!-- Переключатель темы (стандартный, но выровненный) -->
+                    <div class="theme-switch-wrapper toggle-tooltip mt-1 mr-1" data-tooltip="Toggle dark mode">
+                        <label class="switch mx-1">
+                            <input type="checkbox" id="theme-toggle-checkbox">
+                            <span class="slider">
+                                <i class="fas fa-sun icon-light text-[10px]"></i>
+                                <i class="fas fa-moon icon-dark text-[10px]"></i>
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Кнопка Mode -->
+                    <button id="mode-switch-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Switch application mode">
+                        <i class="fas fa-layer-group mr-1.5 text-purple-300"></i><span>Mode</span>
                     </button>
-                      <!-- User status - Twitch connection status -->
-                    <div class="relative text-sm text-white px-2 pt-1" id="user-status">
-                        <i class="fab fa-twitch mr-1"></i><span>Not connected</span>
-                    </div>
+		    <!-- Кнопка смены языка -->
+		    <button id="lang-toggle-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Switch Language">
+			<i class="fas fa-globe mr-1.5 text-purple-300"></i><span id="lang-toggle-text">RU</span>
+		    </button>
                     
-                    <!-- Control buttons group -->
-                    <div class="header-group">
-                        <!-- Theme toggle switch -->
-                        <div class="theme-switch-wrapper toggle-tooltip" data-tooltip="Toggle dark mode">
-                            <label class="switch mx-1">
-                                <input type="checkbox" id="theme-toggle-checkbox">
-                                <span class="slider">
-                                    <i class="fas fa-sun icon-light"></i>
-                                    <i class="fas fa-moon icon-dark"></i>
-                                </span>
-                            </label>
-                        </div>
-                        
-                        <!-- Mode switch button -->
-                        <button id="mode-switch-btn" class="header-button" title="Switch application mode">
-                            <i class="fas fa-layer-group"></i><span>Mode</span>
-                        </button>
-                        
-                        <!-- Refresh button -->
-                        <button id="manual-refresh" class="header-button" title="Manually refresh all data">
-                            <i class="fas fa-sync"></i><span>Refresh</span>
-                        </button>
-                    </div>                </div>
+                    <!-- Кнопка Refresh -->
+                    <button id="manual-refresh" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Manually refresh all data">
+                        <i class="fas fa-sync mr-1.5 text-purple-300"></i><span>Refresh</span>
+                    </button>
+                </div>
+
             </div>
         </div>
-    </nav>    <!-- Container -->
+    </nav>
+    <!-- Container -->
     <div class="container w-full mx-auto pt-20">
         <div class="w-full px-4 md:px-0 md:mt-8 mb-16 text-gray-800 leading-normal">
-              <!-- Mining Status -->
-            <div class="flex flex-wrap card-container position-relative">
-                <div class="w-full md:w-1/2 xl:w-1/3 p-3">
-                    <div class="bg-white border rounded shadow p-2">
+            
+<!-- Дашборд: Две независимые колонки -->
+            <div class="flex flex-wrap -mx-3 mb-6">
+                
+                <!-- ЛЕВАЯ КОЛОНКА -->
+                <div class="w-full lg:w-1/2 px-3 flex flex-col gap-4 mb-4 lg:mb-0">
+                    
+                    <!-- 1. STATUS -->
+                    <div class="bg-white border rounded shadow p-3">
                         <div class="flex flex-row items-center">
                             <div class="flex-shrink pr-4">
                                 <div class="rounded p-3 bg-purple-600" id="status-color"><i class="fas fa-gem fa-2x fa-fw fa-inverse"></i></div>
                             </div>
-                            <div class="flex-1 text-right md:text-center">
-                                <h5 class="font-bold uppercase text-gray-500">Status</h5>
+                            <div class="flex-1 text-left">
+                                <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="status">Status</h5>
                                 <h3 class="font-bold text-lg" id="mining-status">Loading...</h3>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="w-full md:w-1/2 xl:w-1/3 p-3">
-                    <div class="bg-white border rounded shadow p-2">
-                        <div class="flex flex-row items-center">
-                            <div class="flex-shrink pr-4">
-                                <div class="rounded p-3 bg-blue-600"><i class="fas fa-tv fa-2x fa-fw fa-inverse"></i></div>
-                            </div>
-                            <div class="flex-1 text-right md:text-center">
-                                <h5 class="font-bold uppercase text-gray-500">Current Channel</h5>
-                                <h3 class="font-bold text-lg" id="current-channel">Loading...</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="w-full md:w-1/2 xl:w-1/3 p-3">
-                    <div class="bg-white border rounded shadow p-2">
+                    <!-- 2. CURRENT GAME -->
+                    <div class="bg-white border rounded shadow p-3">
                         <div class="flex flex-row items-center">
                             <div class="flex-shrink pr-4">
                                 <div class="rounded p-3 bg-pink-600"><i class="fas fa-gamepad fa-2x fa-fw fa-inverse"></i></div>
                             </div>
-                            <div class="flex-1 text-right md:text-center">
-                                <h5 class="font-bold uppercase text-gray-500">Current Game</h5>
+                            <div class="flex-1 text-left">
+                                <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="game">Current Game</h5>
                                 <h3 class="font-bold text-lg" id="current-game">Loading...</h3>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Drop Progress -->
-            <div class="flex flex-wrap">
-                <div class="w-full md:w-1/2 xl:w-full p-3">
-                    <div class="bg-white border rounded shadow p-2">
-                        <div class="flex flex-row items-center">                            <div class="flex-shrink pr-4">
+                    <!-- 3. CURRENT DROP -->
+                    <div class="bg-white border rounded shadow p-3">
+                        <div class="flex flex-row items-center">
+                            <div class="flex-shrink pr-4">
                                 <div id="drop-image-container" class="rounded bg-green-600 flex items-center justify-center" style="width: 64px; height: 64px;">
-                                    <!-- The drop image will be loaded here by JavaScript -->
                                     <i id="drop-image-fallback" class="fas fa-gift fa-3x fa-fw fa-inverse"></i>
                                     <img id="drop-image" class="w-full h-full object-cover rounded hidden" alt="Drop image">
                                 </div>
                             </div>
-                            <div class="flex-1">
-                                <h5 class="font-bold uppercase text-gray-500">Current Drop</h5>                                <h3 class="font-bold text-lg" id="current-drop">Loading...</h3>
+                            <div class="flex-1 text-left">
+                                <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="drop">Current Drop</h5>
+                                <h3 class="font-bold text-lg" id="current-drop">Loading...</h3>
                                 <div class="pt-1" id="drop-progress-container">
                                     <div class="shadow w-full bg-gray-200 rounded">
                                         <div class="bg-purple-600 text-xs leading-none py-1 text-center text-white rounded" id="drop-progress-bar" style="width: 0%">0%</div>
-                                    </div>                                    <div class="text-sm mt-1 text-gray-600" id="drop-progress-text"></div>
-
-                                    <!-- Advanced mode information -->
+                                    </div>
+                                    <div class="text-sm mt-1 text-gray-600" id="drop-progress-text"></div>
+                                    
+                                    <!-- Advanced info -->
                                     <div class="drop-advanced-info mt-3 text-xs border-t border-gray-200 pt-2">
                                         <div class="flex justify-between">
                                             <span class="text-gray-600">Data Source:</span>
@@ -218,29 +229,39 @@
                                             <span class="text-gray-600">Raw Progress:</span>
                                             <span class="text-gray-800" id="drop-raw-progress">--</span>
                                         </div>
-                                        <div class="flex justify-between mt-1">
-                                            <span class="text-gray-600">Last Update:</span>
-                                            <span class="text-gray-800" id="drop-last-update">--</span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Mining Status -->
-            <div class="flex flex-wrap">
-                <div class="w-full md:w-1/2 xl:w-full p-3">
-                    <div class="bg-white border rounded shadow p-4 mb-4">
+                <!-- ПРАВАЯ КОЛОНКА -->
+                <div class="w-full lg:w-1/2 px-3 flex flex-col gap-4">
+                    
+                    <!-- 1. CURRENT CHANNEL -->
+                    <div class="bg-white border rounded shadow p-3">
+                        <div class="flex flex-row items-center">
+                            <div class="flex-shrink pr-4">
+                                <div class="rounded p-3 bg-blue-600"><i class="fas fa-tv fa-2x fa-fw fa-inverse"></i></div>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="channel">Current Channel</h5>
+                                <h3 class="font-bold text-lg" id="current-channel">Loading...</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. DIAGNOSTICS -->
+                    <div class="bg-white border rounded shadow p-4 flex-1">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
                                 <div class="p-3 bg-blue-600 rounded mr-4">
                                     <i class="fas fa-stethoscope fa-2x fa-inverse"></i>
-                                </div>                                <div>
-                                    <h5 class="font-bold uppercase text-gray-500">Diagnostics</h5>
-                                    <h3 class="font-bold text-xl text-gray-800">System Status</h3>
+                                </div>                                
+                                <div>
+                                    <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="diagnostics">Diagnostics</h5>
+                                    <h3 class="font-bold text-xl text-gray-800" data-translate="sys_status">System Status</h3>
                                 </div>
                             </div>
                             <button id="fetch-diagnostics" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
@@ -248,23 +269,17 @@
                             </button>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"><div class="bg-gray-100 p-3 rounded">
+                        <!-- Сетка внутри диагностики переделана под 2 колонки, так как она теперь занимает пол-экрана -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="bg-gray-100 p-3 rounded">
                                 <div class="font-bold text-gray-600">App Version:</div>
                                 <div class="text-gray-800" id="app-version">Unknown</div>
-                                <div class="diagnostics-extra-info mt-2 text-xs border-t pt-2">
-                                    <div class="text-gray-600">Build: <span class="text-gray-800" id="build-info">--</span></div>
-                                    <div class="text-gray-600">Platform: <span class="text-gray-800" id="platform-info">--</span></div>
-                                </div>
                             </div>
                             <div class="bg-gray-100 p-3 rounded">
                                 <div class="font-bold text-gray-600">Connection Status:</div>
                                 <div id="connection-detail" class="text-gray-800 flex items-center">
                                     <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
                                     Checking...
-                                </div>
-                                <div class="diagnostics-extra-info mt-2 text-xs border-t pt-2">
-                                    <div class="text-gray-600">Ping: <span class="text-gray-800" id="connection-ping">--</span></div>
-                                    <div class="text-gray-600">Last Error: <span class="text-gray-800" id="last-error">None</span></div>
                                 </div>
                             </div>
                             <div class="bg-gray-100 p-3 rounded">
@@ -281,28 +296,22 @@
                                     Checking...
                                 </div>
                             </div>
-                            <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600">Stats:</div>
-                                <div class="text-gray-800 text-sm">
-                                    <div>Campaigns: <span id="campaigns-count">0</span></div>
-                                    <div>Channels: <span id="channels-count">0</span></div>
-                                    <div>Active Drops: <span id="drops-count">0</span></div>
-                                </div>
-                            </div>
-                            <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600 mb-1">Actions:</div>
+                            
+                            <!-- Actions теперь занимают всю ширину внутри карточки -->
+                            <div class="bg-gray-100 p-3 rounded col-span-1 md:col-span-2">
+                                <div class="font-bold text-gray-600 mb-1" data-translate="actions">Actions:</div>
                                 <div class="flex flex-wrap gap-2">
-                                    <button id="refresh-inventory" class="bg-green-500 hover:bg-green-600 text-white text-xs px-2 py-1 rounded">
+                                    <button id="refresh-inventory" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
                                         <i class="fas fa-sync mr-1"></i> Refresh Inventory
                                     </button>
-                                    <button id="reload-tdm" class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-plug mr-1"></i> Reload
+                                    <button id="reload-tdm" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
+                                        <i class="fas fa-plug mr-1"></i> Reload  
                                     </button>
-                                    <button id="switch-channel" class="bg-purple-500 hover:bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                                    <button id="switch-channel" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
                                         <i class="fas fa-exchange-alt mr-1"></i> Switch Channel
                                     </button>
-                                    <button id="reload-server" class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-plug mr-1"></i> Reload Server
+                                    <button id="reload-server" class="bg-red-500 hover:bg-red-600 text-white shadow-sm transition-colors text-xs px-2 py-1 rounded">
+                                        <i class="fas fa-power-off mr-1"></i> Reload Server
                                     </button>
                                 </div>
                             </div>
@@ -315,35 +324,40 @@
             <div class="flex flex-wrap mt-4">
                 <div class="w-full p-3">
                     <div class="bg-white border rounded shadow p-2">
-                        <div class="border-b border-gray-200">                            <nav class="flex">
-                                <button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-purple-600 text-purple-600" id="tab-btn-channels">
-                                    Channels
-                                </button>
-                                <button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-campaigns">
-                                    Campaigns
-                                </button>                                <button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-inventory">
-                                    Inventory
-                                </button>
-                                <button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-login">
-                                    Login
-                                </button>
-                                <button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-settings">
-                                    Settings
-                                </button>
+                        <div class="border-b border-gray-200">                            
+                            <nav class="flex">
+				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-purple-600 text-purple-600" id="tab-btn-channels" data-translate="tab_channels">
+				    Channels
+				</button>
+				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-campaigns" data-translate="tab_campaigns">
+				    Campaigns
+				</button>                                
+				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-inventory" data-translate="tab_inventory">
+				    Inventory
+				</button>
+				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-login" data-translate="tab_login">
+				    Login
+				</button>
+				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-btn-settings" data-translate="tab_settings">
+				    Settings
+				</button>
                             </nav>
                         </div>
                         <div class="p-3" id="tab-content">
                             <!-- Tab content will be loaded here dynamically -->
                             <div id="channels-tab" class="tab-panel">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-lg font-semibold">Available Channels</h2>
-                                    <input type="text" id="channel-search" placeholder="Search channels..." class="px-3 py-1 border rounded">
-                                </div>                                <div id="channels-list" class="max-h-96 overflow-y-auto">                                    <table class="min-w-full bg-white">                                        <thead>
+				    <h2 class="text-lg font-semibold" data-translate="avail_channels">Available Channels</h2>
+				    <input type="text" id="channel-search" placeholder="Search channels..." data-translate-placeholder="search_placeholder" class="px-3 py-1 border rounded">
+                                </div>                                
+                                <div id="channels-list" class="max-h-96 overflow-y-auto">                                    
+                                    <table class="min-w-full bg-white">                                        
+                                        <thead>
                                             <tr>                                                
-                                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-2/5">Channel</th>
-                                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5">Game</th>
-                                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5">Viewers</th>
-                                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5">Actions</th>
+						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-2/5" data-translate="col_channel">Channel</th>
+						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_game">Game</th>
+						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_viewers">Viewers</th>
+						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_actions">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody id="channels-table-body">
@@ -352,7 +366,7 @@
                                     </table>
                                 </div>
                             </div>
-                <div id="campaigns-tab" class="tab-panel hidden">  
+                            <div id="campaigns-tab" class="tab-panel hidden">  
                                 <div class="flex justify-between items-center mb-4">
                                     <h2 class="text-lg font-semibold">All Campaigns</h2>
                                     <div id="campaign-filters" class="flex items-center space-x-4">
@@ -389,7 +403,8 @@
                             </div>
                             
                             <div id="inventory-tab" class="tab-panel hidden">
-                                <div class="flex flex-col md:flex-row">                                    <div class="w-full md:w-1/2 p-2">
+                                <div class="flex flex-col md:flex-row">                                    
+                                    <div class="w-full md:w-1/2 p-2">
                                         <h2 class="text-lg font-semibold mb-2">Pending Drops</h2>
                                         <div id="pending-drops" class="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto">
                                             <!-- Pending drops will be loaded here dynamically -->
@@ -402,7 +417,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            <div id="settings-tab" class="tab-panel hidden">
+                            </div>                            
+                            
+                            <div id="settings-tab" class="tab-panel hidden">
                                 <h2 class="text-lg font-semibold mb-4">Settings</h2>
                                 
                                 <!-- Priority Settings Section -->
@@ -511,7 +528,11 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- JavaScript -->    <script src="{{ url_for('static', filename='js/loading.js') }}"></script>    <script src="{{ url_for('static', filename='js/lazy-loader.js') }}"></script>
+    </div>    
+
+    <!-- JavaScript -->    
+    <script src="{{ url_for('static', filename='js/loading.js') }}"></script>    
+    <script src="{{ url_for('static', filename='js/lazy-loader.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/global-exports.js') }}"></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
@@ -529,10 +550,100 @@
             // Setup scroll position tracking - must be called after the DOM is loaded
             if (typeof setupScrollTracking === 'function') {
                 setupScrollTracking();
-            }        });    </script>    <!-- Theme and Mode Manager Scripts -->
+            }        
+        });    
+    </script>    
+
+    <!-- Theme and Mode Manager Scripts -->
     <script src="{{ url_for('static', filename='js/theme-manager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mode-manager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/advanced-mode.js') }}"></script>
     <script src="{{ url_for('static', filename='js/responsive-header.js') }}"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+const dict = {
+        'ru': {
+            'status': 'Статус',
+            'channel': 'Текущий канал',
+            'game': 'Текущая игра',
+            'drop': 'Текущий дроп',
+            'diagnostics': 'Диагностика',
+            'sys_status': 'Состояние системы',
+            'actions': 'Действия',
+            // Вкладки
+            'tab_channels': 'Каналы',
+            'tab_campaigns': 'Кампании',
+            'tab_inventory': 'Инвентарь',
+            'tab_login': 'Вход',
+            'tab_settings': 'Настройки',
+            // Шапка таблицы и поиск
+            'avail_channels': 'Доступные каналы',
+            'search_placeholder': 'Поиск каналов...',
+            'col_channel': 'Канал',
+            'col_game': 'Игра',
+            'col_viewers': 'Зрители',
+            'col_actions': 'Действия',
+            'no_channels': 'Нет доступных каналов.'
+        },
+        'en': {
+            'status': 'Status',
+            'channel': 'Current Channel',
+            'game': 'Current Game',
+            'drop': 'Current Drop',
+            'diagnostics': 'Diagnostics',
+            'sys_status': 'System Status',
+            'actions': 'Actions',
+            // Вкладки
+            'tab_channels': 'Channels',
+            'tab_campaigns': 'Campaigns',
+            'tab_inventory': 'Inventory',
+            'tab_login': 'Login',
+            'tab_settings': 'Settings',
+            // Шапка таблицы и поиск
+            'avail_channels': 'Available Channels',
+            'search_placeholder': 'Search channels...',
+            'col_channel': 'Channel',
+            'col_game': 'Game',
+            'col_viewers': 'Viewers',
+            'col_actions': 'Actions',
+            'no_channels': 'No channels available.'
+        }
+    };
+let currentLang = localStorage.getItem('appLang') || 'en';
+    const langBtn = document.getElementById('lang-toggle-btn');
+    const langText = document.getElementById('lang-toggle-text');
+    
+    function applyLang(lang) {
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (dict[lang] && dict[lang][key]) {
+                el.textContent = dict[lang][key];
+            }
+        });
+        // Перевод плейсхолдеров у инпутов
+        document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-translate-placeholder');
+            if (dict[lang] && dict[lang][key]) {
+                el.placeholder = dict[lang][key];
+            }
+        });
+
+        langText.textContent = lang === 'ru' ? 'RU' : 'EN';
+        localStorage.setItem('appLang', lang);
+    }
+
+    // Вот это мы добавляем:
+    if (langBtn) {
+        langBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ru' : 'en';
+            applyLang(currentLang);
+        });
+    }
+
+    applyLang(currentLang);
+});
+</script>
+</script>
+
 </body>
 </html>
