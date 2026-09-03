@@ -37,6 +37,7 @@ main_event_loop = None
 # Progress monitoring globals
 progress_monitor_thread = None
 activation_monitor_thread = None
+reload_monitor_thread = None
 last_progress_value = None
 last_progress_time = None
 progress_check_interval = 10 * 60 
@@ -44,7 +45,7 @@ progress_stalled = False
 
 # Initialize the event loop reference
 def initialize(loop, twitch_instance):
-    global tdm_instance, main_event_loop, progress_monitor_thread, activation_monitor_thread
+    global tdm_instance, main_event_loop, progress_monitor_thread, activation_monitor_thread, reload_monitor_thread
     tdm_instance = twitch_instance
     main_event_loop = loop
     
@@ -58,6 +59,35 @@ def initialize(loop, twitch_instance):
         activation_monitor_thread = threading.Thread(target=_activation_monitor_loop, daemon=True)
         activation_monitor_thread.start()
         logger.info("Activation monitor thread started")
+
+    if reload_monitor_thread is None:
+        reload_monitor_thread = threading.Thread(target=_reload_loop, daemon=True)
+        reload_monitor_thread.start()
+        logger.info("Reload monitor thread started")
+
+
+def _reload_loop():
+    while True:
+        try:
+            sleep(3 * 60)
+
+            if tdm_instance is None or tdm_instance.expiration_handled:
+                continue
+
+            gui = _get_gui()
+            current_drop = None
+            if gui and hasattr(gui, 'progress') and hasattr(gui.progress, 'current_drop'):
+                current_drop = gui.progress.current_drop
+
+            if current_drop is None:
+                watching_channel = tdm_instance.watching_channel.get_with_default(None)
+                current_drop = tdm_instance.get_active_drop(watching_channel)
+
+            if current_drop is None:
+                main_event_loop.call_soon_threadsafe(tdm_instance.reload)
+                logger.warning("No active drop found; reload requested")
+        except Exception as e:
+            logger.error(f"Error in reload loop: {e}")
 
 
 def _activation_monitor_loop():
