@@ -1463,12 +1463,16 @@ function updateActivationExpiration(expirationTime) {
         return;
     }
 
-    const totalSeconds = Math.floor(remaining / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    expirationElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    const totalMinutes = Math.floor(remaining / 60000);
+    if (totalMinutes >= 1440) {
+        expirationElement.textContent = `${Math.floor(totalMinutes / 1440)} days`;
+    } else if (totalMinutes >= 60) {
+        expirationElement.textContent = `${Math.floor(totalMinutes / 60)} hours`;
+    } else if (totalMinutes > 0) {
+        expirationElement.textContent = `${totalMinutes} minutes`;
+    } else {
+        expirationElement.textContent = 'Less than 1 minute';
+    }
 }
 
 // Update the channels UI with data
