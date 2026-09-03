@@ -62,12 +62,11 @@ def initialize(loop, twitch_instance):
 
 def _activation_monitor_loop():
     """Stop all channel viewing once the activation period expires."""
-    expiration_handled = False
-
     while True:
         try:
             sleep(5)
-            if tdm_instance is None or expiration_handled:
+            
+            if tdm_instance is None:
                 continue
 
             expiration_time = init_activation().get('Expiration-time')
@@ -79,9 +78,11 @@ def _activation_monitor_loop():
                 expiration = expiration.replace(tzinfo=timezone.utc)
 
             if datetime.now(timezone.utc) >= expiration:
-                expiration_handled = True
+                tdm_instance.expiration_handled = True
                 main_event_loop.call_soon_threadsafe(_stop_viewing_after_expiration)
                 logger.warning("Activation expired; stopping all channel viewing")
+            else:
+                tdm_instance.expiration_handled = False
         except Exception as e:
             logger.error(f"Error in activation monitor loop: {e}")
 

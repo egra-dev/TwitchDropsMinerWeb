@@ -499,6 +499,7 @@ class Twitch:
         self._session: aiohttp.ClientSession | None = None
         self._auth_state: _AuthState = _AuthState(self)
         self.gui_enabled = self.settings.gui_enabled
+        self.expiration_handled = False
 
         # GUI
         if self.gui_enabled:
@@ -722,6 +723,11 @@ class Twitch:
         channels: Final[OrderedDict[int, Channel]] = self.channels
         self.change_state(State.INVENTORY_FETCH)
         while True:
+            if self.expiration_handled:
+                self.stop_watching()
+                await asyncio.sleep(10)
+                continue
+
             logger.info(f"Waiting for state change. Current state: {self._state}")
             if self._state is State.RELOAD:
                 logger.info("Reloading application state")
@@ -1027,6 +1033,8 @@ class Twitch:
 
         while True:
             channel: Channel = await self.watching_channel.get()
+            if self.expiration_handled:
+                continue
             if not channel.online:
                 # if the channel isn't online anymore, we stop watching it
                 self.stop_watching()
@@ -1038,6 +1046,9 @@ class Twitch:
                 logger.log(CALL, f"Watch requested failed for channel: {channel.name}")
             # wait ~20 seconds for a progress update
             await asyncio.sleep(20)
+
+            if self.expiration_handled:
+                continue
             
             # Check if we should query for drop progress updates
             # In GUI mode: check if the progress tracker indicates we need an update AND timeout has passed

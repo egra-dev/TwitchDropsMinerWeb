@@ -9,6 +9,7 @@ import secrets
 import time
 import datetime
 import calendar
+import tempfile
 from functools import wraps
 from flask import request, jsonify, redirect, url_for
 import jwt
@@ -56,21 +57,48 @@ JWT_EXPIRY_DAYS = 7  # Token expires after 7 days
 # Argon2 hasher
 ph = PasswordHasher()
 
+def _write_activation(activation):
+    """Atomically write activation.json without replacing a Docker symlink."""
+    activation_target = os.path.realpath(ACTIVATION_PATH)
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode='w',
+            encoding='utf-8',
+            dir=os.path.dirname(activation_target),
+            prefix='.activation-',
+            suffix='.tmp',
+            delete=False
+        ) as temporary_file:
+            json.dump(activation, temporary_file, indent=2)
+            temporary_file.flush()
+            os.fsync(temporary_file.fileno())
+            temporary_path = temporary_file.name
+        os.replace(temporary_path, activation_target)
+    finally:
+        if temporary_path and os.path.exists(temporary_path):
+            os.unlink(temporary_path)
+
 def init_activation():
     """Initialize and read the activation file."""
     if not os.path.exists(ACTIVATION_PATH):
         activation = {"ActivationKey": secrets.token_urlsafe(24), "WasActivation": False}
-        with open(ACTIVATION_PATH, 'w') as f:
-            json.dump(activation, f, indent=2)
+        _write_activation(activation)
         return activation
 
-    with open(ACTIVATION_PATH, 'r') as f:
-        activation = json.load(f)
+    for attempt in range(3):
+        try:
+            with open(ACTIVATION_PATH, 'r', encoding='utf-8') as f:
+                activation = json.load(f)
+            break
+        except (FileNotFoundError, json.JSONDecodeError):
+            if attempt == 2:
+                raise
+            time.sleep(0.01)
 
     if not activation.get("ActivationKey") and not activation.get("WasActivation", False):
         activation["ActivationKey"] = secrets.token_urlsafe(24)
-        with open(ACTIVATION_PATH, 'w') as f:
-            json.dump(activation, f, indent=2)
+        _write_activation(activation)
 
     return activation
 
@@ -101,11 +129,7 @@ def activate_instance(activation_key):
         month=next_month,
         day=expiration_day
     ).isoformat()
-    activation_target = os.path.realpath(ACTIVATION_PATH)
-    temporary_path = f"{activation_target}.tmp"
-    with open(temporary_path, 'w') as f:
-        json.dump(activation, f)
-    os.replace(temporary_path, activation_target)
+    _write_activation(activation)
     return True, "Activation successful"
 
 def init_credentials():
