@@ -69,7 +69,8 @@ function applyCampaignFilters() {
                 case 'not-linked':
                     return !(campaign.linked || campaign.eligible);
                 case 'upcoming':
-                    return campaign.upcoming === true || isCampaignNotPassed(campaign);
+                    return (campaign.linked || campaign.eligible) &&
+                        (campaign.upcoming === true || isCampaignNotPassed(campaign));
                 case 'excluded':
                     return campaign.excluded;
                 case 'finished':
