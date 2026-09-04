@@ -514,7 +514,6 @@ class LanguageManager {
             // Settings
             { original: 'Priority Only', translation: this.getTranslatedText('gui.settings.priority_modes.priority_only', translation) || 'Priority Only' },
             { original: 'Ending Soonest', translation: this.getTranslatedText('gui.settings.priority_modes.ending_soonest', translation) || 'Ending Soonest' },
-            { original: 'Low Availability First', translation: this.getTranslatedText('gui.settings.priority_modes.low_availability', translation) || 'Low Availability First' },
             
             // Buttons
             { original: 'Add', translation: this.getTranslatedText('web.settings.add', translation) || 'Add' },
