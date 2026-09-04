@@ -82,12 +82,17 @@ function preloadData(dataType) {
     let fetchPromise;
     switch (dataType) {
         case 'campaigns':
-            fetchPromise = fetch('/api/campaigns')
+            fetchPromise = fetch('/api/campaigns', {
+                headers: typeof getAuthHeaders === 'function' ? getAuthHeaders() : {}
+            })
                 .then(response => response.ok ? response.json() : Promise.reject('Error'))
                 .then(data => {
                     if (!data.error) {
                         preloadedData.campaigns = data;
                         preloadedData.lastPreloadTime.campaigns = now;
+                        if (typeof window.storeCampaignsData === 'function') {
+                            window.storeCampaignsData(data);
+                        }
                     }
                     return data;
                 });
