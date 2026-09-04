@@ -371,13 +371,13 @@ k<!DOCTYPE html>
                                 <div class="flex justify-between items-center mb-4">
                                     <h2 class="text-lg font-semibold">All Campaigns</h2>
                                     <div id="campaign-filters" class="flex items-center space-x-4">
-                                        <label for="campaign-filter" class="sr-only">Campaign filter</label>
+                                        <label for="campaign-filter" class="sr-only" data-translate="campaign_filter">Campaign filter</label>
                                         <select id="campaign-filter" class="campaign-filter border border-gray-300 rounded px-2 py-1 text-sm">
-                                            <option value="all">All</option>
-                                            <option value="not-linked">Not linked</option>
-                                            <option value="upcoming">Upcoming</option>
-                                            <option value="excluded">Excluded</option>
-                                            <option value="finished">Finished</option>
+                                            <option value="all" data-translate="filter_all">All</option>
+                                            <option value="not-linked" data-translate="filter_not_linked">Not linked</option>
+                                            <option value="upcoming" data-translate="filter_upcoming">Upcoming</option>
+                                            <option value="excluded" data-translate="filter_excluded">Excluded</option>
+                                            <option value="finished" data-translate="filter_finished">Finished</option>
                                         </select>
                                         <button id="refresh-campaigns" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-2 py-1 rounded">
                                             <i class="fas fa-sync mr-1"></i> Refresh
@@ -559,6 +559,12 @@ const dict = {
             'diagnostics': 'Диагностика',
             'sys_status': 'Состояние системы',
             'actions': 'Действия',
+            'campaign_filter': 'Фильтр кампаний',
+            'filter_all': 'Все',
+            'filter_not_linked': 'Не привязанные',
+            'filter_upcoming': 'В очереди',
+            'filter_excluded': 'Исключенные',
+            'filter_finished': 'Завершенные',
             // Вкладки
             'tab_channels': 'Каналы',
             'tab_campaigns': 'Кампании',
@@ -582,6 +588,12 @@ const dict = {
             'diagnostics': 'Diagnostics',
             'sys_status': 'System Status',
             'actions': 'Actions',
+            'campaign_filter': 'Campaign filter',
+            'filter_all': 'All',
+            'filter_not_linked': 'Not linked',
+            'filter_upcoming': 'Upcoming',
+            'filter_excluded': 'Excluded',
+            'filter_finished': 'Finished',
             // Вкладки
             'tab_channels': 'Channels',
             'tab_campaigns': 'Campaigns',
