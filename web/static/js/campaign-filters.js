@@ -1,6 +1,6 @@
 /**
  * campaign-filters.js - Handles campaign filtering functionality
- * Similar to the GUI implementation, adds filters for Not linked, Upcoming, Expired, Excluded, and Finished campaigns
+ * Adds a dropdown filter for campaign visibility modes.
  */
 
 // Use global variable set in global-exports.js
@@ -10,15 +10,10 @@ if (typeof window.originalCampaignsData === 'undefined') {
 
 // Initialize campaign filters
 function initCampaignFilters() {
-    // Get filter checkboxes
-    const filterCheckboxes = document.querySelectorAll('.campaign-filter');
-    if (!filterCheckboxes.length) return;
+    const campaignFilter = document.getElementById('campaign-filter');
+    if (!campaignFilter) return;
     
-    // Add change event to each filter checkbox
-    filterCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            applyCampaignFilters();
-        });    });
+    campaignFilter.addEventListener('change', applyCampaignFilters);
     
     // Add refresh button event listener
     const refreshCampaignsButton = document.getElementById('refresh-campaigns');
@@ -61,49 +56,29 @@ function initCampaignFilters() {
     // Campaign Filters initialized
 }
 
-// Apply campaign filters based on checkbox states
+// Apply the selected campaign filter.
 function applyCampaignFilters() {
     // If no campaigns data, nothing to filter
     if (!window.originalCampaignsData || !window.originalCampaignsData.length) return;
-    // Get filter states
-    const filterNotLinked = document.getElementById('filter-not-linked').checked;
-    const filterUpcoming = document.getElementById('filter-upcoming').checked;
-    const filterExpired = document.getElementById('filter-expired').checked;
-    const filterExcluded = document.getElementById('filter-excluded').checked;
-    const filterFinished = document.getElementById('filter-finished').checked;
-      // Create a copy of the original data to filter
+    const selectedFilter = document.getElementById('campaign-filter').value;
     let filteredData = [...window.originalCampaignsData];
     
-    // Apply filters (similar to GUI implementation in InventoryOverview._update_visibility)
-    filteredData = filteredData.filter(campaign => {
-        // Filter by linked status
-        if (!filterNotLinked && !(campaign.linked || campaign.eligible)) {
-            return false;
-        }
-        
-        // Filter by campaign status
-        if (!(
-            campaign.active || 
-            (filterUpcoming && campaign.upcoming) || 
-            (filterExpired && campaign.expired)
-        )) {
-            return false;
-        }
-        
-        // Filter by exclusion status (check if game is in exclude list)
-        // Since we don't have direct access to the exclude list in the frontend,
-        // we'll use the 'excluded' property provided by the API
-        if (!filterExcluded && campaign.excluded) {
-            return false;
-        }
-        
-        // Filter by finished status
-        if (!filterFinished && campaign.finished) {
-            return false;
-        }
-        
-        return true;
-    });
+    if (selectedFilter !== 'all') {
+        filteredData = filteredData.filter(campaign => {
+            switch (selectedFilter) {
+                case 'not-linked':
+                    return !(campaign.linked || campaign.eligible);
+                case 'upcoming':
+                    return campaign.upcoming;
+                case 'excluded':
+                    return campaign.excluded;
+                case 'finished':
+                    return campaign.finished;
+                default:
+                    return true;
+            }
+        });
+    }
     
     // Update campaigns UI with filtered data
     if (typeof window.updateCampaignsUI === 'function') {
