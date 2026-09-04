@@ -69,7 +69,7 @@ function applyCampaignFilters() {
                 case 'not-linked':
                     return !(campaign.linked || campaign.eligible);
                 case 'upcoming':
-                    return campaign.upcoming;
+                    return campaign.upcoming || isCampaignUpcoming(campaign);
                 case 'excluded':
                     return campaign.excluded;
                 case 'finished':
@@ -85,6 +85,13 @@ function applyCampaignFilters() {
         window.updateCampaignsUI(filteredData);
     } 
     // If function not available, silently fail
+}
+
+function isCampaignUpcoming(campaign) {
+    if (!campaign || !campaign.start_time) return false;
+
+    const startTime = Date.parse(campaign.start_time);
+    return !Number.isNaN(startTime) && startTime > Date.now();
 }
 
 // Override the global placeholder function
