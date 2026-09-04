@@ -58,9 +58,9 @@ function initCampaignFilters() {
 
 // Apply the selected campaign filter.
 function applyCampaignFilters() {
-    // If no campaigns data, nothing to filter
-    if (!window.originalCampaignsData || !window.originalCampaignsData.length) return;
-    const selectedFilter = document.getElementById('campaign-filter').value;
+    const campaignFilter = document.getElementById('campaign-filter');
+    if (!campaignFilter || !Array.isArray(window.originalCampaignsData)) return;
+    const selectedFilter = campaignFilter.value;
     let filteredData = [...window.originalCampaignsData];
     
     if (selectedFilter !== 'all') {
@@ -69,7 +69,7 @@ function applyCampaignFilters() {
                 case 'not-linked':
                     return !(campaign.linked || campaign.eligible);
                 case 'upcoming':
-                    return campaign.upcoming || isCampaignUpcoming(campaign);
+                    return isCampaignUpcoming(campaign);
                 case 'excluded':
                     return campaign.excluded;
                 case 'finished':
@@ -88,7 +88,9 @@ function applyCampaignFilters() {
 }
 
 function isCampaignUpcoming(campaign) {
-    if (!campaign || !campaign.start_time) return false;
+    if (!campaign) return false;
+    if (campaign.upcoming === true) return true;
+    if (!campaign.start_time) return false;
 
     const startTime = Date.parse(campaign.start_time);
     return !Number.isNaN(startTime) && startTime > Date.now();
@@ -119,5 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         initCampaignFilters();
         addTabChangeListener();
+        applyCampaignFilters();
     }, 300);
 });

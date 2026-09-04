@@ -22,7 +22,3 @@ window.storeCampaignsData = function(data) {
     return data;
 };
 
-window.applyCampaignFilters = function() {
-    // Campaign filters not yet loaded
-    return false;
-};
