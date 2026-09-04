@@ -325,7 +325,7 @@ k<!DOCTYPE html>
                 <div class="w-full p-3">
                     <div class="bg-white border rounded shadow p-2">
                         <div class="border-b border-gray-200">                            
-                            <nav class="flex">
+                            <nav class="flex overflow-x-auto whitespace-nowrap pb-2">
 				<button class="tab-button py-2 px-4 text-center border-b-2 font-medium text-sm leading-5 border-purple-600 text-purple-600" id="tab-btn-channels" data-translate="tab_channels">
 				    Channels
 				</button>
@@ -345,17 +345,18 @@ k<!DOCTYPE html>
                         </div>
                         <div class="p-3" id="tab-content">
                             <!-- Tab content will be loaded here dynamically -->
-                            <div id="channels-tab" class="tab-panel">
-                                <div class="flex justify-between items-center mb-4">
-				    <h2 class="text-lg font-semibold" data-translate="avail_channels">Available Channels</h2>
-				    <input type="text" id="channel-search" placeholder="Search channels..." data-translate-placeholder="search_placeholder" class="px-3 py-1 border rounded">
-                                </div>                                
-                                <div id="channels-list" class="max-h-96 overflow-y-auto">                                    
-                                    <table class="min-w-full bg-white">                                        
-                                        <thead>
-                                            <tr>                                                
-						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-2/5" data-translate="col_channel">Channel</th>
-						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_game">Game</th>
+			    <div id="channels-tab" class="tab-panel">
+    				<!-- flex-col для мобилок, md:flex-row для ПК, gap-3 для отступа -->
+   				 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+   				     <h2 class="text-lg font-semibold" data-translate="avail_channels">Available Channels</h2>
+    				    <input type="text" id="channel-search" placeholder="Search channels..." data-translate-placeholder="search_placeholder" class="w-full md:w-auto px-3 py-1 border rounded">
+ 				   </div>
+ 				   <div id="channels-list" class="max-h-96 overflow-y-auto overflow-x-auto w-full">                                    
+    				    <table class="min-w-full bg-white">                                        
+        			    <thead>
+           			     <tr>                                                
+               			    	     <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider min-w-[120px]" data-translate="col_channel">Channel</th>
+                    				<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_game">Game</th>
 						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_viewers">Viewers</th>
 						<th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider w-1/5" data-translate="col_actions">Actions</th>
                                             </tr>
