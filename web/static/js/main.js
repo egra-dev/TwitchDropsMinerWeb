@@ -370,8 +370,8 @@ function setupTabNavigation() {
             
             // Start preloading data for the selected tab
             if (tabId === 'campaigns') {
-                // If we're switching to campaigns, preload campaigns data
-                preloadData('campaigns');
+                // Load campaigns through the main path so the active filter is applied.
+                fetchCampaigns();
             } else if (tabId === 'inventory') {
                 // If we're switching to inventory, preload inventory data
                 preloadData('inventory');
