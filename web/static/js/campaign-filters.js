@@ -69,7 +69,7 @@ function applyCampaignFilters() {
                 case 'not-linked':
                     return !(campaign.linked || campaign.eligible);
                 case 'upcoming':
-                    return isCampaignUpcoming(campaign);
+                    return campaign.upcoming === true || isCampaignNotPassed(campaign);
                 case 'excluded':
                     return campaign.excluded;
                 case 'finished':
@@ -87,13 +87,13 @@ function applyCampaignFilters() {
     // If function not available, silently fail
 }
 
-function isCampaignUpcoming(campaign) {
+function isCampaignNotPassed(campaign) {
     if (!campaign) return false;
     if (campaign.upcoming === true) return true;
-    if (!campaign.start_time) return false;
+    if (!campaign.end_time) return false;
 
-    const startTime = Date.parse(campaign.start_time);
-    return !Number.isNaN(startTime) && startTime > Date.now();
+    const endTime = Date.parse(campaign.end_time);
+    return !Number.isNaN(endTime) && endTime > Date.now();
 }
 
 // Override the global placeholder function
