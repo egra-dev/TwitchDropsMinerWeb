@@ -72,7 +72,8 @@ function applyCampaignFilters() {
                     if (campaign.finished) 
                         return false;
 
-                    return (campaign.linked || campaign.eligible) &&
+                    return !campaign.excluded &&
+                        (campaign.linked || campaign.eligible) &&
                         (campaign.upcoming === true || isCampaignNotPassed(campaign));
                 case 'excluded':
                     return campaign.excluded;

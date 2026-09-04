@@ -1397,9 +1397,18 @@ function updateStatusUI(data) {
         
         progressBar.style.width = `${percent}%`;
         progressBar.textContent = `${percent}%`;
+
+        const progressText = document.getElementById('drop-progress-text');
+        if (progressText && typeof data.drop_progress === 'string' && data.drop_progress.includes('/')) {
+            const [current, required] = data.drop_progress.split('/');
+            progressText.textContent = `${current}/${required} min`;
+        }
     } else if (progressBar) {
         progressBar.style.width = '0%';
         progressBar.textContent = '0%';
+
+        const progressText = document.getElementById('drop-progress-text');
+        if (progressText) progressText.textContent = '';
     }
     
     // Update time remaining

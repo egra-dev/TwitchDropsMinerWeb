@@ -99,8 +99,8 @@ function updateDropProgressUI(data) {
     
     // Update time remaining in the drop-progress-text element
     const progressText = document.getElementById('drop-progress-text');
-    if (progressText && data.remaining_minutes !== undefined) {
-        progressText.textContent = `Time remaining: ${data.remaining_minutes} minutes`;
+    if (progressText && data.current_minutes !== undefined && data.required_minutes !== undefined) {
+        progressText.textContent = `${data.current_minutes}/${data.required_minutes} min`;
     }
     
     // We've removed the timestamp display that showed "Updated X seconds ago (websocket)"
