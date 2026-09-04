@@ -183,6 +183,90 @@ input:checked + .slider:before {
     border-left-color: #e74c3c;
 }
 
+/* Mobile layout */
+@media (max-width: 640px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    #header > div {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #header > div > div:last-child {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    #header .theme-switch-wrapper {
+        margin-right: 0;
+    }
+
+    #header button {
+        min-height: 34px;
+    }
+
+    #campaigns-tab > div:first-child,
+    #campaign-filters {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    #campaigns-tab > div:first-child > h2,
+    #campaign-filters {
+        width: 100%;
+    }
+
+    #campaign-filters {
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    #campaign-filter {
+        flex: 1 1 140px;
+        min-width: 0;
+    }
+
+    #refresh-campaigns {
+        flex: 0 0 auto;
+    }
+
+    #fetch-diagnostics {
+        margin-top: 8px;
+    }
+
+    #priority-mode,
+    #game-input-priority,
+    #game-input-exclude {
+        width: 100%;
+    }
+
+    #settings-tab .flex.items-center {
+        flex-wrap: wrap;
+    }
+
+    #settings-tab .flex.items-center > button {
+        flex: 1 1 100%;
+    }
+
+    #settings-tab .relative.flex.items-center {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #settings-tab .relative.flex.items-center button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    #settings-tab .relative.flex.items-center input {
+        width: 100%;
+    }
+}
+
 /* Notifications */
 .notification {
     min-width: 300px;
