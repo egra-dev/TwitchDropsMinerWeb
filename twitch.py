@@ -499,7 +499,7 @@ class Twitch:
         self._session: aiohttp.ClientSession | None = None
         self._auth_state: _AuthState = _AuthState(self)
         self.gui_enabled = self.settings.gui_enabled
-        self.expiration_handled = False
+        self.expiration_handled = True
 
         # GUI
         if self.gui_enabled:
@@ -678,7 +678,11 @@ class Twitch:
         """
         logger.info("Switching channel")
         self.change_state(State.CHANNEL_SWITCH)
-        
+
+    
+    async def _wait_for_expiration_handled(self) -> None:
+        while self.expiration_handled:
+            await asyncio.sleep(1)
 
     async def _run(self):
         """
@@ -691,6 +695,9 @@ class Twitch:
         """
         if self.gui_enabled:
             self.gui.start()
+
+        if (self.expiration_handled):
+            await self._wait_for_expiration_handled()
 
         self.change_state(State.IDLE)
 
