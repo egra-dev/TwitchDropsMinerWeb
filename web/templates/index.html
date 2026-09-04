@@ -4,7 +4,7 @@ k<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Twitch Drops Miner - Web Interface</title>
+    <title data-translate="page_title">Twitch Drops Miner - Web Interface</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -111,21 +111,21 @@ k<!DOCTYPE html>
                 <!-- Инфо-блок (Таймер, Админ, Статус) - скрыт на мобильных, чтобы не ломать верстку -->
                 <div class="hidden lg:flex items-center gap-2 text-xs font-medium">
                     <!-- Таймер -->
-                    <div class="bg-purple-800 text-purple-200 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" title="Activation time remaining">
-                        <i class="fas fa-hourglass-half mr-1.5 text-purple-400"></i><span id="activation-time-remaining">Loading...</span>
+                    <div class="bg-purple-800 text-purple-200 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" data-translate-title="activation_time_remaining">
+                        <i class="fas fa-hourglass-half mr-1.5 text-purple-400"></i><span id="activation-time-remaining" data-translate="loading">Loading...</span>
                     </div>
 
                     <!-- Админ и выход -->
                     <div class="bg-purple-800 text-green-300 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center">
-                        <i class="fas fa-user-shield mr-1.5 text-green-400"></i><span class="mr-2">Admin: {{ username }}</span>
-                        <button id="local-logout-btn" class="text-red-400 hover:text-red-200 border-l border-purple-600 pl-2 ml-1 transition-colors flex items-center" title="Logout">
+                        <i class="fas fa-user-shield mr-1.5 text-green-400"></i><span class="mr-2"><span data-translate="admin">Admin</span>: {{ username }}</span>
+                        <button id="local-logout-btn" class="text-red-400 hover:text-red-200 border-l border-purple-600 pl-2 ml-1 transition-colors flex items-center" data-translate-title="logout">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                     
                     <!-- Статус Twitch -->
                     <div class="bg-purple-800 text-yellow-300 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" id="user-status">
-                        <i class="fab fa-twitch mr-1.5"></i><span>Not connected</span>
+                        <i class="fab fa-twitch mr-1.5"></i><span data-translate="not_connected">Not connected</span>
                     </div>
                 </div>
 
@@ -133,7 +133,7 @@ k<!DOCTYPE html>
                 <div class="flex items-center gap-2">
                     
                     <!-- Переключатель темы (стандартный, но выровненный) -->
-                    <div class="theme-switch-wrapper toggle-tooltip mt-1 mr-1" data-tooltip="Toggle dark mode">
+                    <div class="theme-switch-wrapper toggle-tooltip mt-1 mr-1" data-translate-tooltip="toggle_dark_mode">
                         <label class="switch mx-1">
                             <input type="checkbox" id="theme-toggle-checkbox">
                             <span class="slider">
@@ -144,17 +144,17 @@ k<!DOCTYPE html>
                     </div>
                     
                     <!-- Кнопка Mode -->
-                    <button id="mode-switch-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Switch application mode">
-                        <i class="fas fa-layer-group mr-1.5 text-purple-300"></i><span>Mode</span>
+                    <button id="mode-switch-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" data-translate-title="switch_application_mode">
+                        <i class="fas fa-layer-group mr-1.5 text-purple-300"></i><span data-translate="mode">Mode</span>
                     </button>
 		    <!-- Кнопка смены языка -->
-		    <button id="lang-toggle-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Switch Language">
+                    <button id="lang-toggle-btn" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" data-translate-title="switch_language">
 			<i class="fas fa-globe mr-1.5 text-purple-300"></i><span id="lang-toggle-text">RU</span>
 		    </button>
                     
                     <!-- Кнопка Refresh -->
-                    <button id="manual-refresh" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" title="Manually refresh all data">
-                        <i class="fas fa-sync mr-1.5 text-purple-300"></i><span>Refresh</span>
+                    <button id="manual-refresh" class="bg-purple-700 hover:bg-purple-600 text-white border border-purple-500 transition-colors text-xs px-3 py-1.5 rounded shadow-sm flex items-center" data-translate-title="manual_refresh">
+                        <i class="fas fa-sync mr-1.5 text-purple-300"></i><span data-translate="refresh">Refresh</span>
                     </button>
                 </div>
 
@@ -179,7 +179,7 @@ k<!DOCTYPE html>
                             </div>
                             <div class="flex-1 text-left">
                                 <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="status">Status</h5>
-                                <h3 class="font-bold text-lg" id="mining-status">Loading...</h3>
+                                <h3 class="font-bold text-lg" id="mining-status" data-translate="loading">Loading...</h3>
                             </div>
                         </div>
                     </div>
@@ -192,7 +192,7 @@ k<!DOCTYPE html>
                             </div>
                             <div class="flex-1 text-left">
                                 <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="game">Current Game</h5>
-                                <h3 class="font-bold text-lg" id="current-game">Loading...</h3>
+                                <h3 class="font-bold text-lg" id="current-game" data-translate="loading">Loading...</h3>
                             </div>
                         </div>
                     </div>
@@ -208,7 +208,7 @@ k<!DOCTYPE html>
                             </div>
                             <div class="flex-1 text-left">
                                 <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="drop">Current Drop</h5>
-                                <h3 class="font-bold text-lg" id="current-drop">Loading...</h3>
+                                <h3 class="font-bold text-lg" id="current-drop" data-translate="loading">Loading...</h3>
                                 <div class="pt-1" id="drop-progress-container">
                                     <div class="shadow w-full bg-gray-200 rounded">
                                         <div class="bg-purple-600 text-xs leading-none py-1 text-center text-white rounded" id="drop-progress-bar" style="width: 0%">0%</div>
@@ -218,15 +218,15 @@ k<!DOCTYPE html>
                                     <!-- Advanced info -->
                                     <div class="drop-advanced-info mt-3 text-xs border-t border-gray-200 pt-2">
                                         <div class="flex justify-between">
-                                            <span class="text-gray-600">Data Source:</span>
-                                            <span class="text-gray-800" id="drop-data-source">Unknown</span>
+                                            <span class="text-gray-600" data-translate="data_source">Data Source:</span>
+                                            <span class="text-gray-800" id="drop-data-source" data-translate="unknown">Unknown</span>
                                         </div>
                                         <div class="flex justify-between mt-1">
-                                            <span class="text-gray-600">Drop ID:</span>
+                                            <span class="text-gray-600" data-translate="drop_id">Drop ID:</span>
                                             <span class="text-gray-800" id="drop-id">--</span>
                                         </div>
                                         <div class="flex justify-between mt-1">
-                                            <span class="text-gray-600">Raw Progress:</span>
+                                            <span class="text-gray-600" data-translate="raw_progress">Raw Progress:</span>
                                             <span class="text-gray-800" id="drop-raw-progress">--</span>
                                         </div>
                                     </div>
@@ -247,7 +247,7 @@ k<!DOCTYPE html>
                             </div>
                             <div class="flex-1 text-left">
                                 <h5 class="font-bold uppercase text-gray-500 text-sm" data-translate="channel">Current Channel</h5>
-                                <h3 class="font-bold text-lg" id="current-channel">Loading...</h3>
+                                <h3 class="font-bold text-lg" id="current-channel" data-translate="loading">Loading...</h3>
                             </div>
                         </div>
                     </div>
@@ -265,35 +265,35 @@ k<!DOCTYPE html>
                                 </div>
                             </div>
                             <button id="fetch-diagnostics" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-                                <i class="fas fa-sync mr-1"></i> Check Status
+                                <i class="fas fa-sync mr-1"></i> <span data-translate="check_status">Check Status</span>
                             </button>
                         </div>
                         
                         <!-- Сетка внутри диагностики переделана под 2 колонки, так как она теперь занимает пол-экрана -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600">App Version:</div>
-                                <div class="text-gray-800" id="app-version">Unknown</div>
+                                <div class="font-bold text-gray-600" data-translate="app_version">App Version:</div>
+                                <div class="text-gray-800" id="app-version" data-translate="unknown">Unknown</div>
                             </div>
                             <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600">Connection Status:</div>
+                                <div class="font-bold text-gray-600" data-translate="connection_status">Connection Status:</div>
                                 <div id="connection-detail" class="text-gray-800 flex items-center">
                                     <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                                    Checking...
+                                    <span data-translate="checking">Checking...</span>
                                 </div>
                             </div>
                             <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600">Websocket Status:</div>
+                                <div class="font-bold text-gray-600" data-translate="websocket_status">Websocket Status:</div>
                                 <div id="websocket-status" class="text-gray-800 flex items-center">
                                     <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                                    Checking...
+                                    <span data-translate="checking">Checking...</span>
                                 </div>
                             </div>
                             <div class="bg-gray-100 p-3 rounded">
-                                <div class="font-bold text-gray-600">Login Status:</div>
+                                <div class="font-bold text-gray-600" data-translate="login_status">Login Status:</div>
                                 <div id="login-status" class="text-gray-800 flex items-center">
                                     <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                                    Checking...
+                                    <span data-translate="checking">Checking...</span>
                                 </div>
                             </div>
                             
@@ -302,16 +302,16 @@ k<!DOCTYPE html>
                                 <div class="font-bold text-gray-600 mb-1" data-translate="actions">Actions:</div>
                                 <div class="flex flex-wrap gap-2">
                                     <button id="refresh-inventory" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-sync mr-1"></i> Refresh Inventory
+                                        <i class="fas fa-sync mr-1"></i> <span data-translate="refresh_inventory">Refresh Inventory</span>
                                     </button>
                                     <button id="reload-tdm" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-plug mr-1"></i> Reload  
+                                        <i class="fas fa-plug mr-1"></i> <span data-translate="reload">Reload</span>
                                     </button>
                                     <button id="switch-channel" class="bg-white text-purple-600 border border-purple-500 hover:bg-purple-600 hover:text-white transition-colors text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-exchange-alt mr-1"></i> Switch Channel
+                                        <i class="fas fa-exchange-alt mr-1"></i> <span data-translate="switch_channel">Switch Channel</span>
                                     </button>
                                     <button id="reload-server" class="bg-red-500 hover:bg-red-600 text-white shadow-sm transition-colors text-xs px-2 py-1 rounded">
-                                        <i class="fas fa-power-off mr-1"></i> Reload Server
+                                        <i class="fas fa-power-off mr-1"></i> <span data-translate="reload_server">Reload Server</span>
                                     </button>
                                 </div>
                             </div>
@@ -369,7 +369,7 @@ k<!DOCTYPE html>
                             </div>
                             <div id="campaigns-tab" class="tab-panel hidden">  
                                 <div class="flex justify-between items-center mb-4">
-                                    <h2 class="text-lg font-semibold">All Campaigns</h2>
+                                    <h2 class="text-lg font-semibold" data-translate="all_campaigns">All Campaigns</h2>
                                     <div id="campaign-filters" class="flex items-center space-x-4">
                                         <label for="campaign-filter" class="sr-only" data-translate="campaign_filter">Campaign filter</label>
                                         <select id="campaign-filter" class="campaign-filter border border-gray-300 rounded px-2 py-1 text-sm">
@@ -380,7 +380,7 @@ k<!DOCTYPE html>
                                             <option value="finished" data-translate="filter_finished">Finished</option>
                                         </select>
                                         <button id="refresh-campaigns" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-2 py-1 rounded">
-                                            <i class="fas fa-sync mr-1"></i> Refresh
+                                            <i class="fas fa-sync mr-1"></i> <span data-translate="refresh">Refresh</span>
                                         </button>
                                     </div>
                                 </div>
@@ -394,13 +394,13 @@ k<!DOCTYPE html>
                             <div id="inventory-tab" class="tab-panel hidden">
                                 <div class="flex flex-col md:flex-row">                                    
                                     <div class="w-full md:w-1/2 p-2">
-                                        <h2 class="text-lg font-semibold mb-2">Pending Drops</h2>
+                                        <h2 class="text-lg font-semibold mb-2" data-translate="pending_drops">Pending Drops</h2>
                                         <div id="pending-drops" class="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto">
                                             <!-- Pending drops will be loaded here dynamically -->
                                         </div>
                                     </div>
                                     <div class="w-full md:w-1/2 p-2">
-                                        <h2 class="text-lg font-semibold mb-2">Claimed Drops</h2>
+                                        <h2 class="text-lg font-semibold mb-2" data-translate="claimed_drops">Claimed Drops</h2>
                                         <div id="claimed-drops" class="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto">
                                             <!-- Claimed drops will be loaded here dynamically -->
                                         </div>
@@ -409,36 +409,36 @@ k<!DOCTYPE html>
                             </div>                            
                             
                             <div id="settings-tab" class="tab-panel hidden">
-                                <h2 class="text-lg font-semibold mb-4">Settings</h2>
+                                <h2 class="text-lg font-semibold mb-4" data-translate="settings">Settings</h2>
                                 
                                 <!-- Priority Settings Section -->
                                 <div class="bg-white shadow overflow-hidden rounded-md mb-6">
                                     <div class="px-4 py-5 sm:px-6 bg-gray-50">
-                                        <h3 class="text-lg leading-6 font-medium text-gray-900">Priority Settings</h3>
+                                        <h3 class="text-lg leading-6 font-medium text-gray-900" data-translate="priority_settings">Priority Settings</h3>
                                     </div>
                                     <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
                                         <!-- Priority Mode -->
                                         <div class="mb-4">
-                                            <label for="priority-mode" class="block text-sm font-medium text-gray-700">Priority Mode</label>
+                                            <label for="priority-mode" class="block text-sm font-medium text-gray-700" data-translate="priority_mode">Priority Mode</label>
                                             <select id="priority-mode" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                                <option value="ENDING_SOONEST">Ending Soonest</option>
-                                                <option value="PRIORITY_ONLY">Priority Only</option>
-                                                <option value="LOW_AVBL_FIRST">Low Availability First</option>
+                                                <option value="ENDING_SOONEST" data-translate="ending_soonest">Ending Soonest</option>
+                                                <option value="PRIORITY_ONLY" data-translate="priority_only">Priority Only</option>
+                                                <option value="LOW_AVBL_FIRST" data-translate="low_availability_first">Low Availability First</option>
                                             </select>
                                         </div>
                                         
                                         <!-- Priority List -->
                                         <div class="mb-6">
                                             <div class="flex justify-between items-center mb-2">
-                                                <h4 class="text-sm font-medium text-gray-700">Priority List</h4>
+                                                <h4 class="text-sm font-medium text-gray-700" data-translate="priority_list">Priority List</h4>
                                                 <div class="flex space-x-2">
                                                     <div class="relative flex items-center">
-                                                        <input type="text" id="game-input-priority" class="block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Type game name..." autocomplete="off" list="priority-games-list">
+                                                        <input type="text" id="game-input-priority" class="block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Type game name..." data-translate-placeholder="game_name_placeholder" autocomplete="off" list="priority-games-list">
                                                         <datalist id="priority-games-list">
                                                             <!-- Will be populated dynamically -->
                                                         </datalist>
                                                         <button id="add-priority-game" class="ml-2 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                            Add
+                                                            <span data-translate="add">Add</span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -453,15 +453,15 @@ k<!DOCTYPE html>
                                         <!-- Exclusion List -->
                                         <div>
                                             <div class="flex justify-between items-center mb-2">
-                                                <h4 class="text-sm font-medium text-gray-700">Exclusion List</h4>
+                                                <h4 class="text-sm font-medium text-gray-700" data-translate="exclusion_list">Exclusion List</h4>
                                                 <div class="flex space-x-2">
                                                     <div class="relative flex items-center">
-                                                        <input type="text" id="game-input-exclude" class="block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Type game name..." autocomplete="off" list="exclude-games-list">
+                                                        <input type="text" id="game-input-exclude" class="block w-64 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Type game name..." data-translate-placeholder="game_name_placeholder" autocomplete="off" list="exclude-games-list">
                                                         <datalist id="exclude-games-list">
                                                             <!-- Will be populated dynamically -->
                                                         </datalist>
                                                         <button id="add-exclude-game" class="ml-2 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                            Add
+                                                            <span data-translate="add">Add</span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -478,36 +478,36 @@ k<!DOCTYPE html>
                                 <!-- Save and Reload Buttons -->
                                 <div class="flex items-center justify-between">
                                     <button id="save-settings-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                        Save Settings
+                                        <span data-translate="save_settings">Save Settings</span>
                                     </button>
                                     
                                     <button id="reload-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                                        Save & Reload
+                                        <span data-translate="save_reload">Save &amp; Reload</span>
                                     </button>
                                 </div>
                             </div>
                             
                             <div id="login-tab" class="tab-panel hidden">
-                                <h2 class="text-lg font-semibold mb-4">Twitch Authentication</h2>
+                                <h2 class="text-lg font-semibold mb-4" data-translate="twitch_authentication">Twitch Authentication</h2>
                                 <div id="login-status" class="mb-6">
                                     <p id="login-message" class="text-lg mb-4">Login status will appear here...</p>
                                     
                                     <div id="not-logged-in" class="p-4 border rounded bg-gray-50 mb-4">
-                                        <h3 class="font-bold text-md text-gray-700 mb-2">Login to Twitch</h3>
-                                        <p class="mb-4 text-sm">
+                                        <h3 class="font-bold text-md text-gray-700 mb-2" data-translate="login_to_twitch">Login to Twitch</h3>
+                                        <p class="mb-4 text-sm" data-translate="login_description">
                                             Click the button below to initiate the Twitch login process. This will open the login prompt in the desktop application.
                                         </p>
                                         <button id="login-button" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded flex items-center">
-                                            <i class="fab fa-twitch mr-2"></i> Login with Twitch
+                                            <i class="fab fa-twitch mr-2"></i> <span data-translate="login_with_twitch">Login with Twitch</span>
                                         </button>
                                     </div>
                                     
                                     <div id="logged-in" class="hidden p-4 border rounded bg-green-50 mb-4">
-                                        <h3 class="font-bold text-md text-gray-700 mb-2">Currently logged in</h3>
-                                        <p class="mb-2 text-sm">You are currently logged in to Twitch as:</p>
+                                        <h3 class="font-bold text-md text-gray-700 mb-2" data-translate="currently_logged_in">Currently logged in</h3>
+                                        <p class="mb-2 text-sm" data-translate="logged_in_as">You are currently logged in to Twitch as:</p>
                                         <p class="font-bold text-lg mb-4" id="username-display">Username</p>
                                         <button id="logout-button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                            Logout
+                                            <span data-translate="logout">Logout</span>
                                         </button>
                                     </div>
                                 </div>
@@ -559,6 +559,53 @@ const dict = {
             'diagnostics': 'Диагностика',
             'sys_status': 'Состояние системы',
             'actions': 'Действия',
+            'page_title': 'Twitch Drops Miner - Веб-интерфейс',
+            'loading': 'Загрузка...',
+            'unknown': 'Неизвестно',
+            'activation_time_remaining': 'Оставшееся время активации',
+            'toggle_dark_mode': 'Переключить тёмную тему',
+            'switch_application_mode': 'Переключить режим приложения',
+            'switch_language': 'Сменить язык',
+            'manual_refresh': 'Обновить все данные',
+            'admin': 'Администратор',
+            'not_connected': 'Не подключен',
+            'mode': 'Режим',
+            'refresh': 'Обновить',
+            'data_source': 'Источник данных:',
+            'drop_id': 'ID дропа:',
+            'raw_progress': 'Исходный прогресс:',
+            'check_status': 'Проверить статус',
+            'app_version': 'Версия приложения:',
+            'connection_status': 'Статус подключения:',
+            'websocket_status': 'Статус WebSocket:',
+            'login_status': 'Статус входа:',
+            'checking': 'Проверка...',
+            'all_campaigns': 'Все кампании',
+            'pending_drops': 'Ожидающие дропы',
+            'claimed_drops': 'Полученные дропы',
+            'twitch_authentication': 'Аутентификация Twitch',
+            'login_to_twitch': 'Войти в Twitch',
+            'login_description': 'Нажмите кнопку ниже, чтобы начать вход в Twitch. Запрос на вход откроется в настольном приложении.',
+            'login_with_twitch': 'Войти через Twitch',
+            'currently_logged_in': 'Вы вошли в систему',
+            'logged_in_as': 'Вы вошли в Twitch как:',
+            'logout': 'Выйти',
+            'settings': 'Настройки',
+            'priority_settings': 'Настройки приоритета',
+            'priority_mode': 'Режим приоритета',
+            'ending_soonest': 'Сначала заканчивающиеся',
+            'priority_only': 'Только приоритетные',
+            'low_availability_first': 'Сначала с малым количеством',
+            'priority_list': 'Список приоритетных игр',
+            'exclusion_list': 'Список исключений',
+            'game_name_placeholder': 'Введите название игры...',
+            'add': 'Добавить',
+            'save_settings': 'Сохранить настройки',
+            'save_reload': 'Сохранить и перезагрузить',
+            'refresh_inventory': 'Обновить инвентарь',
+            'reload': 'Перезагрузить',
+            'switch_channel': 'Сменить канал',
+            'reload_server': 'Перезагрузить сервер',
             'campaign_filter': 'Фильтр кампаний',
             'filter_all': 'Все',
             'filter_not_linked': 'Не привязанные',
@@ -588,6 +635,53 @@ const dict = {
             'diagnostics': 'Diagnostics',
             'sys_status': 'System Status',
             'actions': 'Actions',
+            'page_title': 'Twitch Drops Miner - Web Interface',
+            'loading': 'Loading...',
+            'unknown': 'Unknown',
+            'activation_time_remaining': 'Activation time remaining',
+            'toggle_dark_mode': 'Toggle dark mode',
+            'switch_application_mode': 'Switch application mode',
+            'switch_language': 'Switch Language',
+            'manual_refresh': 'Manually refresh all data',
+            'admin': 'Admin',
+            'not_connected': 'Not connected',
+            'mode': 'Mode',
+            'refresh': 'Refresh',
+            'data_source': 'Data Source:',
+            'drop_id': 'Drop ID:',
+            'raw_progress': 'Raw Progress:',
+            'check_status': 'Check Status',
+            'app_version': 'App Version:',
+            'connection_status': 'Connection Status:',
+            'websocket_status': 'Websocket Status:',
+            'login_status': 'Login Status:',
+            'checking': 'Checking...',
+            'all_campaigns': 'All Campaigns',
+            'pending_drops': 'Pending Drops',
+            'claimed_drops': 'Claimed Drops',
+            'twitch_authentication': 'Twitch Authentication',
+            'login_to_twitch': 'Login to Twitch',
+            'login_description': 'Click the button below to initiate the Twitch login process. This will open the login prompt in the desktop application.',
+            'login_with_twitch': 'Login with Twitch',
+            'currently_logged_in': 'Currently logged in',
+            'logged_in_as': 'You are currently logged in to Twitch as:',
+            'logout': 'Logout',
+            'settings': 'Settings',
+            'priority_settings': 'Priority Settings',
+            'priority_mode': 'Priority Mode',
+            'ending_soonest': 'Ending Soonest',
+            'priority_only': 'Priority Only',
+            'low_availability_first': 'Low Availability First',
+            'priority_list': 'Priority List',
+            'exclusion_list': 'Exclusion List',
+            'game_name_placeholder': 'Type game name...',
+            'add': 'Add',
+            'save_settings': 'Save Settings',
+            'save_reload': 'Save & Reload',
+            'refresh_inventory': 'Refresh Inventory',
+            'reload': 'Reload',
+            'switch_channel': 'Switch Channel',
+            'reload_server': 'Reload Server',
             'campaign_filter': 'Campaign filter',
             'filter_all': 'All',
             'filter_not_linked': 'Not linked',
@@ -626,6 +720,20 @@ let currentLang = localStorage.getItem('appLang') || 'en';
             const key = el.getAttribute('data-translate-placeholder');
             if (dict[lang] && dict[lang][key]) {
                 el.placeholder = dict[lang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-translate-title]').forEach(el => {
+            const key = el.getAttribute('data-translate-title');
+            if (dict[lang] && dict[lang][key]) {
+                el.title = dict[lang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-translate-tooltip]').forEach(el => {
+            const key = el.getAttribute('data-translate-tooltip');
+            if (dict[lang] && dict[lang][key]) {
+                el.setAttribute('data-tooltip', dict[lang][key]);
             }
         });
 
