@@ -746,6 +746,9 @@ let currentLang = localStorage.getItem('appLang') || 'en';
         langBtn.addEventListener('click', () => {
             currentLang = currentLang === 'en' ? 'ru' : 'en';
             applyLang(currentLang);
+            if (typeof refreshData === 'function') {
+                refreshData();
+            }
         });
     }
 
