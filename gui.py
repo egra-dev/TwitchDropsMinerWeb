@@ -1339,8 +1339,12 @@ class InventoryOverview:
             and (campaign.active or upcoming and campaign.upcoming or expired and campaign.expired)
             and (
                 excluded or (
-                    campaign.game.name not in self._settings.exclude
-                    and not priority_only or campaign.game.name in self._settings.priority
+                    campaign.game.name.casefold() not in {
+                        game_name.casefold() for game_name in self._settings.exclude
+                    }
+                    and not priority_only or campaign.game.name.casefold() in {
+                        game_name.casefold() for game_name in self._settings.priority
+                    }
                 )
             )
             and (finished or not campaign.finished)

@@ -785,7 +785,7 @@ class Twitch:
                                 await drop.claim()
                 # figure out which games we want
                 self.wanted_games.clear()
-                exclude = self.settings.exclude
+                exclude = {game_name.casefold() for game_name in self.settings.exclude}
                 priority = self.settings.priority
                 priority_mode = self.settings.priority_mode
                 priority_only = priority_mode is PriorityMode.PRIORITY_ONLY
@@ -807,7 +807,7 @@ class Twitch:
                     if (
                             game not in self.wanted_games  # isn't already there
                             # and isn't excluded by list or priority mode
-                            and game.name not in exclude
+                            and game.name.casefold() not in exclude
                             and (not priority_only or game.name in priority)
                             # and can be progressed within the next hour
                             and campaign.can_earn_within(next_hour)

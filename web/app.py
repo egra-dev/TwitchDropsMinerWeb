@@ -509,7 +509,10 @@ def campaigns(username=None):
                   # Check if the campaign is excluded based on settings
                 campaign_data['excluded'] = False
                 if hasattr(twitch, 'settings') and hasattr(campaign, 'game') and hasattr(campaign.game, 'name'):
-                    if hasattr(twitch.settings, 'exclude') and campaign.game.name in twitch.settings.exclude:
+                    if hasattr(twitch.settings, 'exclude') and any(
+                        campaign.game.name.casefold() == game_name.casefold()
+                        for game_name in twitch.settings.exclude
+                    ):
                         campaign_data['excluded'] = True
                 
                 # Add detailed drop information for each campaign
@@ -1439,8 +1442,10 @@ def update_exclude(username=None):
                 
         elif action == 'remove' and 'game' in data:
             game_name = data['game']
-            if game_name in twitch.settings.exclude:
-                twitch.settings.exclude.remove(game_name)
+            for excluded_game in twitch.settings.exclude:
+                if excluded_game.casefold() == game_name.casefold():
+                    twitch.settings.exclude.remove(excluded_game)
+                    break
         
         return jsonify({'success': True, 'exclude': list(twitch.settings.exclude)})
     except Exception as e:
