@@ -1199,6 +1199,7 @@ class Twitch:
         )
 
     def watch(self, channel: Channel, *, update_status: bool = True):
+        logger.info(f"Starting to farm game: {channel.game.name} on channel {channel.name}")
         if self.gui_enabled:
             self.gui.tray.change_icon("active")
             self.gui.channels.set_watching(channel)
