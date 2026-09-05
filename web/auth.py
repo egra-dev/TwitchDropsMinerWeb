@@ -357,6 +357,11 @@ def login_required(f):
         if is_activation_needed():
             return redirect(url_for('activation'))
 
+        if is_setup_needed():
+            response = redirect(url_for('login'))
+            response.delete_cookie('auth_token', path='/')
+            return response
+
         # Get token from session or cookie
         token = request.cookies.get('auth_token')
         
