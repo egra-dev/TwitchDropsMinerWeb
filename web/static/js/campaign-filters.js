@@ -61,7 +61,12 @@ function applyCampaignFilters() {
     const campaignFilter = document.getElementById('campaign-filter');
     if (!campaignFilter || !Array.isArray(window.originalCampaignsData)) return;
     const selectedFilter = campaignFilter.value;
-    let filteredData = [...window.originalCampaignsData];
+    let filteredData = window.originalCampaignsData.map(campaign => ({
+        ...campaign,
+        drops: Array.isArray(campaign.drops)
+            ? campaign.drops.filter(drop => Number(drop.required_minutes) > 0)
+            : campaign.drops
+    }));
     
     if (selectedFilter !== 'all') {
         filteredData = filteredData.filter(campaign => {
