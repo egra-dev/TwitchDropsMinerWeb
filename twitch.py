@@ -803,13 +803,6 @@ class Twitch:
                         priority.index(c.game.name) if c.game.name in priority else MAX_INT
                     )
                 )
-                logger.info(
-                    "Campaign priority order: %s",
-                    [
-                        f"{campaign.game.name} (ends {campaign.ends_at.isoformat()})"
-                        for campaign in sorted_campaigns
-                    ],
-                )
                 for campaign in sorted_campaigns:
                     game: Game = campaign.game
                     if (
