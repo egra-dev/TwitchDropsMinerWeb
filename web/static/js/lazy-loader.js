@@ -214,7 +214,7 @@ function createCampaignCard(campaign) {
                             return `
                             <div class="mr-4 mb-2 flex flex-col items-center" style="min-width: 100px">
                                 ${drop.image_url ? 
-                                `<img data-src="${drop.image_url}" alt="${drop.name}" class="w-16 h-16 object-cover rounded lazy-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E">` : 
+                                `<img data-src="${drop.image_url}" alt="${drop.name}" class="w-16 h-16 object-cover rounded lazy-image" src="${drop.image_url}">` : 
                                 `<div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
                                     <i class="fas fa-gift text-gray-400"></i>
                                 </div>`}
