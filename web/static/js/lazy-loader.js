@@ -184,7 +184,7 @@ function createCampaignCard(campaign) {
                 <div class="w-1/6 flex flex-col items-center pr-3">
                     ${campaign.image_url ? 
                     `<div class="mb-2">
-                        <img data-src="${campaign.image_url}" alt="${campaign.name}" class="w-24 h-24 object-cover rounded lazy-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E">
+                        <img data-src="${campaign.image_url}" alt="${campaign.name}" class="w-24 h-24 object-cover rounded lazy-image" src="${campaign.image_url}">
                     </div>` : 
                     `<div class="mb-2 w-24 h-24 bg-gray-200 rounded flex items-center justify-center">
                         <i class="fas fa-gamepad text-gray-400 text-2xl"></i>
