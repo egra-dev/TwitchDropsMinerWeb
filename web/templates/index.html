@@ -115,6 +115,11 @@ k<!DOCTYPE html>
                         <i class="fas fa-hourglass-half mr-1.5 text-purple-400"></i><span id="activation-time-remaining" data-translate="loading">Loading...</span>
                     </div>
 
+                    <!-- Время запуска приложения -->
+                    <div class="bg-purple-800 text-blue-200 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center" data-translate-title="app_start_time">
+                        <i class="fas fa-clock mr-1.5 text-blue-400"></i><span id="app-start-time" data-translate="loading">Loading...</span>
+                    </div>
+
                     <!-- Админ и выход -->
                     <div class="bg-purple-800 text-green-300 px-2 py-1.5 rounded border border-purple-700 shadow-inner flex items-center">
                         <i class="fas fa-user-shield mr-1.5 text-green-400"></i><span class="mr-2"><span data-translate="admin">Admin</span>: {{ username }}</span>
@@ -571,6 +576,7 @@ const dict = {
             'raw_progress': 'Исходный прогресс:',
             'check_status': 'Проверить статус',
             'app_version': 'Версия приложения:',
+            'app_start_time': 'Время запуска приложения (МСК)',
             'connection_status': 'Статус подключения:',
             'websocket_status': 'Статус WebSocket:',
             'login_status': 'Статус входа:',
@@ -646,6 +652,7 @@ const dict = {
             'raw_progress': 'Raw Progress:',
             'check_status': 'Check Status',
             'app_version': 'App Version:',
+            'app_start_time': 'Application start time (MSK)',
             'connection_status': 'Connection Status:',
             'websocket_status': 'Websocket Status:',
             'login_status': 'Login Status:',

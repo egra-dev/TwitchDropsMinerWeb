@@ -1737,6 +1737,9 @@ function updateDiagnosticUI(data) {
     // Update version
     const appVersion = document.getElementById('app-version');
     if (appVersion) appVersion.textContent = data.system_info.version || 'Unknown';
+
+    const appStartTime = document.getElementById('app-start-time');
+    if (appStartTime) appStartTime.textContent = data.system_info.application_start_time || 'Unknown';
     
     // Check if connection status changed from disconnected to connected
     const isCurrentlyConnected = data.miner_state.session_active;

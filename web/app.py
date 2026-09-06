@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Any, Optional
 from time import sleep
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from flask import Flask, render_template, jsonify, request, redirect, url_for, make_response
 from flask_cors import CORS
 import os
@@ -40,6 +40,8 @@ activation_monitor_thread = None
 reload_monitor_thread = None
 last_progress_value = None
 last_progress_time = None
+application_start_time = datetime.now(timezone.utc)
+moscow_timezone = timezone(timedelta(hours=3))
 progress_check_interval = 10 * 60 
 progress_stalled = False
 
@@ -1472,6 +1474,9 @@ def diagnostic(username=None):
             'platform': sys.platform,
             'python_version': sys.version,
             'build_date': datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            'application_start_time': application_start_time.astimezone(moscow_timezone).strftime(
+                "%d.%m.%Y %H:%M:%S"
+            ),
             'is_release': os.environ.get("RELEASE_BUILD") == "true"
         }
           # Miner state
