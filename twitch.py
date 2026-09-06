@@ -790,11 +790,12 @@ class Twitch:
                 priority_mode = self.settings.priority_mode
                 priority_only = priority_mode is PriorityMode.PRIORITY_ONLY
                 next_hour = datetime.now(timezone.utc) + timedelta(hours=1)
-                # sorted_campaigns: list[DropsCampaign] = list(self.inventory)
-                sorted_campaigns: list[DropsCampaign] = self.inventory
+                sorted_campaigns: list[DropsCampaign] = list(self.inventory)
                 if not priority_only:
                     if priority_mode is PriorityMode.ENDING_SOONEST:
-                        sorted_campaigns.sort(key=lambda c: c.ends_at)
+                        sorted_campaigns.sort(
+                            key=lambda c: c.upcoming and c.starts_at or c.ends_at
+                        )
                     elif priority_mode is PriorityMode.LOW_AVBL_FIRST:
                         sorted_campaigns.sort(key=lambda c: c.availability)
                 sorted_campaigns.sort(
