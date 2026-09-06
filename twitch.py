@@ -803,6 +803,13 @@ class Twitch:
                         priority.index(c.game.name) if c.game.name in priority else MAX_INT
                     )
                 )
+                logger.info(
+                    "Campaign priority order: %s",
+                    [
+                        f"{campaign.game.name} (ends {campaign.ends_at.isoformat()})"
+                        for campaign in sorted_campaigns
+                    ],
+                )
                 for campaign in sorted_campaigns:
                     game: Game = campaign.game
                     if (
@@ -815,6 +822,7 @@ class Twitch:
                     ):
                         # non-excluded games with no priority are placed last, below priority ones
                         self.wanted_games.append(game)
+                logger.info("Games selected for watching: %s", self.wanted_games)
                 full_cleanup = True
                 self.restart_watching()
                 self.change_state(State.CHANNELS_CLEANUP)
