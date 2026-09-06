@@ -92,10 +92,15 @@ def _reload_loop():
 
 def _activation_monitor_loop():
     """Stop all channel viewing once the activation period expires."""
+    is_first = True
+
     while True:
         try:
-            sleep(20)
-            
+            if (is_first == False):
+                sleep(20)
+
+            is_first = True
+
             if tdm_instance is None:
                 continue
 
