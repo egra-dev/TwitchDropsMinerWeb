@@ -66,7 +66,7 @@ function applyCampaignFilters() {
         drops: Array.isArray(campaign.drops)
             ? campaign.drops.filter(drop => Number(drop.required_minutes) > 0)
             : campaign.drops
-    }));
+    })).filter(campaign => Array.isArray(campaign.drops) && campaign.drops.length > 0);
     
     if (selectedFilter !== 'all') {
         filteredData = filteredData.filter(campaign => {
