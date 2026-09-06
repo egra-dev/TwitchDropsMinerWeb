@@ -790,19 +790,31 @@ class Twitch:
                 priority_mode = self.settings.priority_mode
                 priority_only = priority_mode is PriorityMode.PRIORITY_ONLY
                 next_hour = datetime.now(timezone.utc) + timedelta(hours=1)
-                sorted_campaigns: list[DropsCampaign] = list(self.inventory)
-                if not priority_only:
-                    if priority_mode is PriorityMode.ENDING_SOONEST:
-                        sorted_campaigns.sort(
-                            key=lambda c: c.upcoming and c.starts_at or c.ends_at
-                        )
-                    elif priority_mode is PriorityMode.LOW_AVBL_FIRST:
-                        sorted_campaigns.sort(key=lambda c: c.availability)
-                sorted_campaigns.sort(
-                    key=lambda c: (
-                        priority.index(c.game.name) if c.game.name in priority else MAX_INT
+                eligible_campaigns = [
+                    campaign
+                    for campaign in self.inventory
+                    if campaign.can_earn_within(next_hour)
+                ]
+                if priority_only:
+                    eligible_campaigns = [
+                        campaign
+                        for campaign in eligible_campaigns
+                        if campaign.game.name in priority
+                    ]
+
+                def campaign_sort_key(campaign: DropsCampaign):
+                    if priority_mode is PriorityMode.LOW_AVBL_FIRST:
+                        mode_value = campaign.availability
+                    else:
+                        mode_value = campaign.upcoming and campaign.starts_at or campaign.ends_at
+                    priority_value = (
+                        priority.index(campaign.game.name)
+                        if campaign.game.name in priority
+                        else MAX_INT
                     )
-                )
+                    return priority_value, mode_value
+
+                sorted_campaigns = sorted(eligible_campaigns, key=campaign_sort_key)
                 logger.info(
                     "Campaign priority order: %s",
                     [
@@ -817,10 +829,7 @@ class Twitch:
                             # and isn't excluded by list or priority mode
                             and game.name.casefold() not in exclude
                             and (not priority_only or game.name in priority)
-                            # and can be progressed within the next hour
-                            and campaign.can_earn_within(next_hour)
                     ):
-                        # non-excluded games with no priority are placed last, below priority ones
                         self.wanted_games.append(game)
                 logger.info("Games selected for watching: %s", self.wanted_games)
                 full_cleanup = True
