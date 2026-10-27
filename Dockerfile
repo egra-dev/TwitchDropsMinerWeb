@@ -52,6 +52,7 @@ RUN apt-get update && apt-get install -y \
     libgirepository-1.0-1 \
     gir1.2-gtk-3.0 \
     gir1.2-ayatanaappindicator3-0.1 \
+    chromium \
     tk \
     --no-install-recommends \
     && apt-get clean \
@@ -61,6 +62,7 @@ RUN apt-get update && apt-get install -y \
 # Copy virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="/usr/bin/chromium"
 
 # Verify installations worked
 RUN python -c "import yarl; print(f'yarl version: {yarl.__version__}')" && \

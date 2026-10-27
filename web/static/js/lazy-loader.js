@@ -163,6 +163,13 @@ function getDataWithPreload(dataType, fetchFunction) {
 // Set up virtual rendering for campaigns list
 // Helper function to create a campaign card - moved from main.js
 function createCampaignCard(campaign) {
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[character]));
     // Determine status display information
     const statusClass = campaign.status === 'ACTIVE'
         ? 'bg-green-100 border-green-500'
@@ -198,13 +205,13 @@ function createCampaignCard(campaign) {
                 <div class="w-1/6 flex flex-col items-center pr-3">
                     ${campaign.image_url ? 
                     `<div class="mb-2">
-                        <img data-src="${campaign.image_url}" alt="${campaign.name}" class="w-24 h-24 object-cover rounded lazy-image" src="${campaign.image_url}">
+                        <img data-src="${escapeHtml(campaign.image_url)}" alt="${escapeHtml(campaign.name)}" class="w-24 h-24 object-cover rounded lazy-image" src="${escapeHtml(campaign.image_url)}">
                     </div>` : 
                     `<div class="mb-2 w-24 h-24 bg-gray-200 rounded flex items-center justify-center">
                         <i class="fas fa-gamepad text-gray-400 text-2xl"></i>
                     </div>`}
                     
-                    <h3 class="font-bold text-sm text-center text-gray-800 mb-2">${campaign.game || 'Unknown Game'}</h3>
+                    <h3 class="font-bold text-sm text-center text-gray-800 mb-2">${escapeHtml(campaign.game || 'Unknown Game')}</h3>
                     <div class="text-xs text-center">
                         ${campaign.start_time ? `<p class="text-gray-600">Starts: ${new Date(campaign.start_time).toLocaleDateString()}</p>` : ''}
                         ${campaign.end_time ? `<p class="text-gray-600">Ends: ${new Date(campaign.end_time).toLocaleDateString()}</p>` : ''}
@@ -216,7 +223,7 @@ function createCampaignCard(campaign) {
                 
                 <!-- Right side with drops -->
                 <div class="w-3/4 pl-3 border-l">
-                    <h3 class="font-bold text-base text-gray-800 mb-3">${campaign.name}</h3>
+                    <h3 class="font-bold text-base text-gray-800 mb-3">${escapeHtml(campaign.name)}</h3>
                     
                     ${campaign.drops && campaign.drops.length > 0 ? 
                     `<div class="flex flex-wrap overflow-x-auto pb-2">
@@ -228,12 +235,12 @@ function createCampaignCard(campaign) {
                             return `
                             <div class="mr-4 mb-2 flex flex-col items-center" style="min-width: 100px">
                                 ${drop.image_url ? 
-                                `<img data-src="${drop.image_url}" alt="${drop.name}" class="w-16 h-16 object-cover rounded lazy-image" src="${drop.image_url}">` : 
+                                `<img data-src="${escapeHtml(drop.image_url)}" alt="${escapeHtml(drop.name)}" class="w-16 h-16 object-cover rounded lazy-image" src="${escapeHtml(drop.image_url)}">` :
                                 `<div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
                                     <i class="fas fa-gift text-gray-400"></i>
                                 </div>`}
                                 <div class="mt-1 text-xs text-center">
-                                    <p class="font-semibold">${drop.name}</p>
+                                    <p class="font-semibold">${escapeHtml(drop.name)}</p>
                                     ${!drop.claimed ? 
                                     `<p class="text-xs text-gray-600">${progressPct}% of ${drop.required_minutes} min</p>
                                     <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
@@ -245,7 +252,7 @@ function createCampaignCard(campaign) {
                             `;
                         }).join('')}
                     </div>` : 
-                    `<p class="text-gray-500 text-sm">No drops available</p>`}
+                    `<p class="text-gray-500 text-sm">${campaign.public_catalog ? 'Public campaign catalog entry; drop details are available on Twitch.' : 'No drops available'}</p>`}
                 </div>
             </div>
         </div>

@@ -106,5 +106,6 @@ docker run -d \
 ## Notes
 
 - The Docker image runs the application with the web interface enabled
+- Chromium is included to load Twitch's JavaScript-rendered public campaign catalog. The catalog is scraped from Twitch's page and may require updates if Twitch changes its layout.
 - Data persistence is handled through volume mounts
 - Use the web interface to monitor and control the miner

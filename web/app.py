@@ -1,4 +1,5 @@
 from __future__ import annotations
+import asyncio
 from pathlib import Path
 from typing import Dict, Any, Optional
 from time import sleep
@@ -25,6 +26,9 @@ from version import __version__
 
 # Make sure the current directory is in the path so we can import auth.py
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Import the public campaign scraper after adding the web directory to sys.path.
+from campaign_catalog import PublicCampaignCatalogError, get_public_campaigns
 
 # Import auth module (from the web directory)
 from auth import is_setup_needed, create_user, validate_credentials, generate_token, validate_token, revoke_token, auth_required, login_required, is_activation_needed, activate_instance, init_activation
@@ -573,6 +577,99 @@ def campaigns(username=None):
                     }
                     campaigns_data.append(campaign_data)
         
+        if main_event_loop is not None and main_event_loop.is_running():
+            scrape_future = asyncio.run_coroutine_threadsafe(
+                get_public_campaigns(), main_event_loop
+            )
+            try:
+                public_campaigns = scrape_future.result(timeout=60)
+            except TimeoutError:
+                scrape_future.cancel()
+                logger.warning("Timed out while loading Twitch's public campaign catalog")
+                public_campaigns = []
+            except (PublicCampaignCatalogError, RuntimeError) as e:
+                logger.warning("Could not load Twitch's public campaign catalog: %s", e)
+                public_campaigns = []
+
+            known_ids = {str(campaign['id']) for campaign in campaigns_data}
+            known_names = {
+                (
+                    str(campaign.get('game') or '').casefold(),
+                    str(campaign.get('name') or '').casefold(),
+                )
+                for campaign in campaigns_data
+            }
+            excluded_games = {
+                game_name.casefold()
+                for game_name in (
+                    getattr(getattr(twitch, 'settings', None), 'exclude', None) or []
+                )
+            }
+            for campaign in public_campaigns:
+                campaign_id = str(campaign.get('id') or '')
+                game_name = str(campaign.get('game') or '')
+                campaign_name = str(campaign.get('name') or '')
+                if (
+                    not campaign_id
+                    or not game_name
+                    or not campaign_name
+                    or campaign_id in known_ids
+                    or (game_name.casefold(), campaign_name.casefold()) in known_names
+                ):
+                    continue
+
+                start_time = campaign.get('start_time')
+                end_time = campaign.get('end_time')
+                status = str(campaign.get('status') or '').upper()
+                if status not in ('ACTIVE', 'UPCOMING', 'EXPIRED'):
+                    try:
+                        starts_at = (
+                            datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+                            if start_time else None
+                        )
+                        ends_at = (
+                            datetime.fromisoformat(end_time.replace('Z', '+00:00'))
+                            if end_time else None
+                        )
+                        now = datetime.now(timezone.utc)
+                        if starts_at and starts_at.tzinfo is None:
+                            starts_at = starts_at.replace(tzinfo=timezone.utc)
+                        if ends_at and ends_at.tzinfo is None:
+                            ends_at = ends_at.replace(tzinfo=timezone.utc)
+                        if starts_at and starts_at > now:
+                            status = 'UPCOMING'
+                        elif ends_at and ends_at <= now:
+                            status = 'EXPIRED'
+                        else:
+                            status = 'ACTIVE'
+                    except (TypeError, ValueError):
+                        status = 'ACTIVE'
+
+                campaigns_data.append({
+                    'id': campaign_id,
+                    'name': campaign_name,
+                    'image_url': campaign.get('image_url') or None,
+                    'game': game_name,
+                    'status': status,
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'drops_count': 0,
+                    'claimed_drops': 0,
+                    'total_drops': 0,
+                    'progress': 0,
+                    'active': status == 'ACTIVE',
+                    'upcoming': status == 'UPCOMING',
+                    'expired': status == 'EXPIRED',
+                    'linked': False,
+                    'eligible': False,
+                    'finished': False,
+                    'excluded': game_name.casefold() in excluded_games,
+                    'drops': [],
+                    'public_catalog': True,
+                })
+                known_ids.add(campaign_id)
+                known_names.add((game_name.casefold(), campaign_name.casefold()))
+
         return jsonify(campaigns_data)
     except Exception as e:
         logger.error(f"Error getting campaigns: {e}")

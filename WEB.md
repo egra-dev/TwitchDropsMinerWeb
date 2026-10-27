@@ -7,7 +7,7 @@ Enhanced fork of [TwitchDropsMiner](https://github.com/DevilXD/TwitchDropsMiner)
 The web interface allows you to:
 
 - Monitor and control the miner from any browser
-- View active drop campaigns and progress
+- View active and upcoming campaigns from Twitch's public catalog, alongside account progress
 - Check available channels and their status
 - View claimed and pending drops in your inventory
 - Manage login and authentication

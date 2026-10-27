@@ -38,6 +38,14 @@ if [ $? -ne 0 ]; then
     read -p "Press any key to continue..."
     exit 1
 fi
+"$dirpath/env/bin/python" -m playwright install chromium
+if [ $? -ne 0 ]; then
+    echo
+    echo "Failed to install Chromium for the public Twitch campaign catalog."
+    echo
+    read -p "Press any key to continue..."
+    exit 1
+fi
 
 # Copy .env.example to .env if .env doesn't exist
 if [ ! -f "$dirpath/.env" ]; then

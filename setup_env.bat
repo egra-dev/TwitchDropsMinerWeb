@@ -41,6 +41,14 @@ if %errorlevel% NEQ 0 (
     pause
     exit /b 1
 )
+"%dirpath%\env\scripts\python" -m playwright install chromium
+if %errorlevel% NEQ 0 (
+    echo:
+    echo Failed to install Chromium for the public Twitch campaign catalog.
+    echo:
+    pause
+    exit /b 1
+)
 
 REM Copy .env.example to .env if .env doesn't exist
 if not exist "%dirpath%\.env" (

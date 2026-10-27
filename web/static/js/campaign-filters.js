@@ -69,7 +69,7 @@ function applyCampaignFilters() {
         return { ...campaign, drops };
     }).filter(campaign =>
         Array.isArray(campaign.drops) &&
-        (campaign.drops.length > 0 || isCampaignUpcoming(campaign))
+        (campaign.drops.length > 0 || isCampaignUpcoming(campaign) || campaign.public_catalog)
     );
     
     if (selectedFilter !== 'all') {
@@ -82,7 +82,7 @@ function applyCampaignFilters() {
                         return false;
 
                     return !campaign.excluded &&
-                        (campaign.linked || campaign.eligible) &&
+                        (campaign.public_catalog || campaign.linked || campaign.eligible) &&
                         (campaign.upcoming === true || isCampaignNotPassed(campaign));
                 case 'excluded':
                     return campaign.excluded;
