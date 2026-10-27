@@ -61,12 +61,16 @@ function applyCampaignFilters() {
     const campaignFilter = document.getElementById('campaign-filter');
     if (!campaignFilter || !Array.isArray(window.originalCampaignsData)) return;
     const selectedFilter = campaignFilter.value;
-    let filteredData = window.originalCampaignsData.map(campaign => ({
-        ...campaign,
-        drops: Array.isArray(campaign.drops)
-            ? campaign.drops.filter(drop => Number(drop.required_minutes) > 0)
-            : campaign.drops
-    })).filter(campaign => Array.isArray(campaign.drops) && campaign.drops.length > 0);
+    let filteredData = window.originalCampaignsData.map(campaign => {
+        const upcoming = isCampaignUpcoming(campaign);
+        const drops = Array.isArray(campaign.drops)
+            ? campaign.drops.filter(drop => upcoming || Number(drop.required_minutes) > 0)
+            : campaign.drops;
+        return { ...campaign, drops };
+    }).filter(campaign =>
+        Array.isArray(campaign.drops) &&
+        (campaign.drops.length > 0 || isCampaignUpcoming(campaign))
+    );
     
     if (selectedFilter !== 'all') {
         filteredData = filteredData.filter(campaign => {
@@ -74,7 +78,7 @@ function applyCampaignFilters() {
                 case 'not-linked':
                     return !(campaign.linked || campaign.eligible);
                 case 'upcoming':
-                    if (campaign.finished) 
+                    if (campaign.finished && !isCampaignUpcoming(campaign))
                         return false;
 
                     return !campaign.excluded &&
@@ -83,7 +87,7 @@ function applyCampaignFilters() {
                 case 'excluded':
                     return campaign.excluded;
                 case 'finished':
-                    return campaign.finished;
+                    return campaign.finished && !isCampaignUpcoming(campaign);
                 default:
                     return true;
             }
@@ -104,6 +108,15 @@ function isCampaignNotPassed(campaign) {
 
     const endTime = Date.parse(campaign.end_time);
     return !Number.isNaN(endTime) && endTime > Date.now();
+}
+
+function isCampaignUpcoming(campaign) {
+    if (!campaign) return false;
+    if (campaign.upcoming === true) return true;
+    if (!campaign.start_time) return false;
+
+    const startTime = Date.parse(campaign.start_time);
+    return !Number.isNaN(startTime) && startTime > Date.now();
 }
 
 // Override the global placeholder function

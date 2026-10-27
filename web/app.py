@@ -486,15 +486,16 @@ def campaigns(username=None):
                 else:
                     campaign_data['game'] = None
                     
-                # Add status based on campaign properties
-                if hasattr(campaign, 'active'):
-                    campaign_data['status'] = 'ACTIVE' if campaign.active else 'INACTIVE'
-                elif hasattr(campaign, 'upcoming') and campaign.upcoming:
+                # Check upcoming and expired before inactive: active is always present
+                # as a property and would otherwise mask these states.
+                if hasattr(campaign, 'upcoming') and campaign.upcoming:
                     campaign_data['status'] = 'UPCOMING'
                 elif hasattr(campaign, 'expired') and campaign.expired:
                     campaign_data['status'] = 'EXPIRED'
+                elif hasattr(campaign, 'active') and campaign.active:
+                    campaign_data['status'] = 'ACTIVE'
                 else:
-                    campaign_data['status'] = 'UNKNOWN'
+                    campaign_data['status'] = 'INACTIVE'
                     
                 # Add time info
                 campaign_data['start_time'] = campaign.starts_at.isoformat() if hasattr(campaign, 'starts_at') and campaign.starts_at else None

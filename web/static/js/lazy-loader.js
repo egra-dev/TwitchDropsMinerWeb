@@ -164,9 +164,23 @@ function getDataWithPreload(dataType, fetchFunction) {
 // Helper function to create a campaign card - moved from main.js
 function createCampaignCard(campaign) {
     // Determine status display information
-    const statusClass = campaign.status === 'ACTIVE' ? 'bg-green-100 border-green-500' : 'bg-gray-100 border-gray-400';
-    let statusText = campaign.status === 'ACTIVE' ? 'Active' : 'Inactive';
-    const statusTextColor = campaign.status === 'ACTIVE' ? 'text-green-800' : 'text-gray-600';
+    const statusClass = campaign.status === 'ACTIVE'
+        ? 'bg-green-100 border-green-500'
+        : campaign.status === 'UPCOMING'
+            ? 'bg-blue-100 border-blue-500'
+            : 'bg-gray-100 border-gray-400';
+    let statusText = campaign.status === 'ACTIVE'
+        ? 'Active'
+        : campaign.status === 'UPCOMING'
+            ? 'Upcoming'
+            : campaign.status === 'EXPIRED'
+                ? 'Expired'
+                : 'Inactive';
+    const statusTextColor = campaign.status === 'ACTIVE'
+        ? 'text-green-800'
+        : campaign.status === 'UPCOMING'
+            ? 'text-blue-800'
+            : 'text-gray-600';
     
     // Add "Not Linked" indicator in status if the campaign is not linked
     if (!campaign.linked) {
